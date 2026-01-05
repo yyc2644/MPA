@@ -1,0 +1,145 @@
+{
+    "Gacha": {
+        "next": [
+            "Check_point",
+            "OpenCardBag",
+            "Click_index"
+        ],
+        "post_delay": 1000
+    },
+    "Check_point": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    540,
+                    960,
+                    200,
+                    100
+                ],
+                "template": "gacha_point.png"
+            }
+        },
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": [
+            "Gacha"
+        ]
+    },
+    "Click_index": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    620,
+                    260,
+                    50,
+                    50
+                ],
+                "template": "CardBag/index_icon.png"
+            }
+        },
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": [
+            "SelectionSeries"
+        ]
+    },
+    "SelectionSeries": {
+        "recognition": "OCR",
+        "expected": "B系列",
+        "type": "TemplateMatch",
+        "roi": [
+            90,
+            1078,
+            527,
+            31
+        ],
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": [
+            "SelectionGacha"
+        ]
+    },
+    "SelectionGacha": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    40,
+                    580,
+                    648,
+                    328
+                ],
+                "template": "CardBag/SuperCharizard.png"
+                //默认选择当前的超级喷火龙，todo：后续可增加选择功能
+            }
+        },
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 2000,
+        "next": [
+            "ClickGache"
+        ]
+    },
+    "ClickGache": {
+        //有毒，不能点击范围内？
+        "action": {
+            "type": "Click"
+        },
+        "rect": [
+            220,
+            520,
+            260,
+            420
+        ],
+        "next": [
+            "ClickOpen"
+        ]
+    },
+    "ClickOpen": {
+        "post_delay": 2000,
+        "recognition": "OCR",
+        "expected": "開封",
+        "roi": [
+            299,
+            970,
+            112,
+            57
+        ],
+        "threshold": 0.8,
+        // "only_rec": true,
+        "action": "Click",
+        "next": []
+    },
+    "SwipeGache": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    540,
+                    700,
+                    200,
+                    100
+                ],
+                "template": "gacha_open_cardbag.png"
+            }
+        },
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 2000
+    }
+}

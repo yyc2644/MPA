@@ -9,8 +9,8 @@
         "action": "StartApp",
         "package": "jp.pokemon.pokemontcgp",
         "next": [
-            "CheckStart"
-        ],
+            "EnterGame"
+        ]
     },
     "EnterGame": {
         "post_delay": 2000,
@@ -26,6 +26,7 @@
         // "only_rec": true,
         "action": "Click",
         "next": [
+            "CloseNotify",
             "CheckStart"
         ]
     },
@@ -40,11 +41,55 @@
             50
         ],
         "threshold": 0.8,
-        // "only_rec": true
+        // "next": [
+        //     "CheckStart"
+        // ]
     },
     "StopPTCG": {
         "post_delay": 1000,
         "action": "StopApp",
         "package": "jp.pokemon.pokemontcgp"
+    },
+    "BackMain": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    30,
+                    1190,
+                    140,
+                    80
+                ],
+                "template": "home_default.png"
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": []
+    },
+    "CloseNotify": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    337,
+                    1131,
+                    50,
+                    50
+                ],
+                "template": "close_notify.png"
+            }
+        },
+        "threshold": 0.8,
+        // "only_rec": true,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": [
+            "CheckStart"
+        ]
     }
 }

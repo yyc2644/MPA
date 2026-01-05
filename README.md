@@ -14,21 +14,25 @@
 > **MaaFramework** 是基于图像识别技术、运用 [MAA](https://github.com/MaaAssistantArknights/MaaAssistantArknights) 开发经验去芜存菁、完全重写的新一代自动化黑盒测试框架。
 > 低代码的同时仍拥有高扩展性，旨在打造一款丰富、领先、且实用的开源库，助力开发者轻松编写出更好的黑盒测试程序，并推广普及。
 
-## 即刻开始
+## 食用方法
 
+- 推荐使用mumu模拟器，其余模拟器理论上支持但是未经测试
+- 登录谷歌账号，如果这一步已经卡住了，说明这个脚本不适合你
+- 下载ptcg
+- 进阶：多个账号模式(todo)
 - [📄 快速开始](https://github.com/MaaXYZ/MaaFramework/blob/main/docs/zh_cn/1.1-%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B.md)
 - [🎞️ 视频教程](https://www.bilibili.com/video/BV1yr421E7MW)
 
 ## 功能列表
 
 - 启动/关闭游戏
-- 自动抽卡
+- 自动抽卡(免费卡包)
 - 得卡挑战
 - 商店免费商品
-- 通行证商品（待定）
+- 通行证商品(todo)
 - 礼物箱
 - 单人对战
-- 他人对战（待定）
+- 他人对战(todo)
 - 每日任务
 
 ## 鸣谢
