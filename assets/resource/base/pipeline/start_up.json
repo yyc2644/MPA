@@ -1,0 +1,50 @@
+{
+    "Start_Up": {
+        "next": [
+            "[JumpBack]StartPTCG"
+        ]
+    },
+    "StartPTCG": {
+        "post_delay": 8000,
+        "action": "StartApp",
+        "package": "jp.pokemon.pokemontcgp",
+        "next": [
+            "CheckStart"
+        ],
+    },
+    "EnterGame": {
+        "post_delay": 2000,
+        "recognition": "OCR",
+        "expected": "Pocket",
+        "roi": [
+            160,
+            660,
+            400,
+            100
+        ],
+        "threshold": 0.8,
+        // "only_rec": true,
+        "action": "Click",
+        "next": [
+            "CheckStart"
+        ]
+    },
+    "CheckStart": {
+        "post_delay": 2000,
+        "recognition": "OCR",
+        "expected": "提供比例",
+        "roi": [
+            60,
+            1100,
+            150,
+            50
+        ],
+        "threshold": 0.8,
+        // "only_rec": true
+    },
+    "StopPTCG": {
+        "post_delay": 1000,
+        "action": "StopApp",
+        "package": "jp.pokemon.pokemontcgp"
+    }
+}

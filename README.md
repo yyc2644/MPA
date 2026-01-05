@@ -5,7 +5,7 @@
 
 <div align="center">
 
-# MPA:Pocketmon Trading Cadr Game Pocket
+# MPA:Pokemon Trading Cadr Game Pocket
 
 </div>
 
