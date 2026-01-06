@@ -1,0 +1,149 @@
+{
+    "StartUp": {
+        ///1.启动游戏
+        // 2.点击进入游戏
+        ///2.检查是否测到主页关键词 （得卡挑战，商店）
+        ///3.关闭通知
+        ///4.如果在抽卡页面，返回主页
+        ///1、启动游戏
+        ///1、启动游戏
+        ///1、启动游戏
+        ///1、启动游戏
+        ///1、启动游戏
+        "post_wait_freezes": 300,
+        "next": [
+            "StartPTCG"
+        ]
+    },
+    "StartPTCG": {
+        "post_delay": 2000,
+        "action": "StartApp",
+        "package": "jp.pokemon.pokemontcgp",
+        "next": [
+            "[JumpBack]ClickPokemonLogo",
+            "[JumpBack]CloseNotify",
+            "[JumpBack]BackMain",
+            "CheckMain"
+        ]
+    },
+    "ClickPokemonLogo": {
+        "recognition": "OCR",
+        "expected": "Pocket",
+        "roi": [
+            160,
+            660,
+            400,
+            100
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "next": [
+            // "CloseNotify",
+            // "CheckStart"
+        ],
+        "post_delay": 2000,
+    },
+    "CheckMain": {
+        "recognition": "OCR",
+        "expected": "得卡",
+        "roi": [
+            132,
+            950,
+            119,
+            37
+        ],
+        "threshold": 0.8,
+        "on_error": [
+            "ClickPokemonLogo",
+            "CheckStart",
+            "BackMain"
+        ],
+        "action": "DoNothing",
+        "next": []
+    },
+    "CheckStart": {
+        "post_delay": 2000,
+        "recognition": "OCR",
+        "expected": "提供比例",
+        "roi": [
+            60,
+            1100,
+            150,
+            50
+        ],
+        "threshold": 0.8,
+        "next": [
+            "BackMain"
+        ]
+    },
+    // "Back": {
+    //     "recognition": {
+    //         "type": "TemplateMatch",
+    //         "param": {
+    //             "roi": [
+    //                 284,
+    //                 1036,
+    //                 154,
+    //                 154
+    //             ],
+    //             "template": "back.png"
+    //         }
+    //     },
+    //     "action": {
+    //         "type": "Click"
+    //     },
+    //     "post_delay": 1000,
+    //     "next": [
+    //         "CheckMain"
+    //     ]
+    // },
+    "StopPTCG": {
+        "post_delay": 1000,
+        "action": "StopApp",
+        "package": "jp.pokemon.pokemontcgp"
+    },
+    "BackMain": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    30,
+                    1190,
+                    140,
+                    80
+                ],
+                "template": "home_default.png"
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": [
+            "CheckMain"
+        ]
+    },
+    "CloseNotify": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    337,
+                    1131,
+                    50,
+                    50
+                ],
+                "template": "close_notify.png"
+            }
+        },
+        "threshold": 0.8,
+        // "only_rec": true,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": [
+            "CheckMain"
+        ]
+    }
+}

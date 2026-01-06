@@ -2,7 +2,6 @@
     "Gacha": {
         "next": [
             "Check_point",
-            "OpenCardBag",
             "Click_index"
         ],
         "post_delay": 1000
