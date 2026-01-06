@@ -1,7 +1,6 @@
 {
     "Gacha": {
         "next": [
-            "Check_point",
             "Click_index"
         ],
         "post_delay": 1000
@@ -89,26 +88,27 @@
         },
         "post_delay": 2000,
         "next": [
-            "ClickGache"
+            "ClickGacha"
         ]
     },
-    "ClickGache": {
-        //有毒，不能点击范围内？
-        "action": {
-            "type": "Click"
-        },
-        "rect": [
-            220,
-            520,
-            260,
-            420
+    "ClickGacha": {
+        //有毒，不能点击范围内？,识别改成识别卡包类别进行点击
+        "action": "Click",
+        "recognition": "OCR",
+        "roi": [
+            404,
+            397,
+            144,
+            119
         ],
+        "expected": "B1a",
+        "threshold": 0.8,
         "next": [
             "ClickOpen"
         ]
     },
     "ClickOpen": {
-        "post_delay": 2000,
+        "post_delay": 4000,
         "recognition": "OCR",
         "expected": "開封",
         "roi": [
@@ -120,25 +120,115 @@
         "threshold": 0.8,
         // "only_rec": true,
         "action": "Click",
-        "next": []
+        "next": [
+            "ClickGacha2"
+        ]
     },
-    "SwipeGache": {
+    "ClickGacha2": {
+        "action": "Click",
+        "recognition": "OCR",
+        "roi": [
+            436,
+            320,
+            89,
+            59
+        ],
+        "expected": "B1a",
+        "threshold": 0.8,
+        "next": [
+            "SwipeGacha"
+        ]
+    },
+    "SwipeGacha": {
+        "repeat_wait_freezes": 500,
+        "action": "Swipe",
+        "end": [
+            90,
+            730
+        ],
+        "begin": [
+            700,
+            729
+        ],
+        "duration": 800,
+        "end_hold": 200,
+        "next": [
+            // "SkipGacha"
+        ]
+    },
+    "SkipGacha": {
         "recognition": {
             "type": "TemplateMatch",
             "param": {
                 "roi": [
-                    540,
-                    700,
-                    200,
-                    100
+                    560,
+                    1140,
+                    150,
+                    150
                 ],
-                "template": "gacha_open_cardbag.png"
+                "template": "CardBag/longclick.png"
             }
         },
         "threshold": 0.8,
         "action": {
             "type": "Click"
         },
-        "post_delay": 2000
+        "duration": 5000,
+        "next": [
+            "ClickContinue"
+        ]
+    },
+    "ClickContinue": {
+        "action": "Click",
+        "recognition": "OCR",
+        "roi": [
+            291,
+            1100,
+            200,
+            200
+        ],
+        "expected": "續",
+        "threshold": 0.8,
+        "next": [
+            "ClickSkip"
+        ]
+    },
+    "ClickSkip": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    568,
+                    1130,
+                    152,
+                    149
+                ],
+                "template": "CardBag/skip.png"
+            }
+        },
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "next": [
+            "ClickSkip",
+            "ClickContinue",
+            "ClickOpen"
+        ]
+    },
+    "GachaOver": {
+        "action": "Click",
+        "recognition": "OCR",
+        "roi": [
+            297,
+            998,
+            137,
+            59
+        ],
+        "expected": "OK",
+        "threshold": 0.8,
+        "next": [
+            // "ClickSkip"
+        ]
     }
 }
