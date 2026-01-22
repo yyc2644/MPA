@@ -1,0 +1,212 @@
+{
+    "Thanks": {
+        "next": [
+            "Click_Fight"
+        ],
+        "post_delay": 1000
+    },
+    "Click_Fight": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    620,
+                    260,
+                    50,
+                    50
+                ],
+                "template": "Fight/fright_logo.png"
+            }
+        },
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": [
+            "SelectionSeries"
+        ]
+    },
+    "SelectionSeries": {
+        "recognition": "OCR",
+        "expected": "B系列",
+        "type": "TemplateMatch",
+        "roi": [
+            90,
+            1078,
+            527,
+            31
+        ],
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": [
+            "SelectionGacha"
+        ]
+    },
+    "SelectionGacha": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    40,
+                    580,
+                    648,
+                    328
+                ],
+                "template": "CardBag/SuperCharizard.png"
+                //默认选择当前的超级喷火龙，todo：后续可增加选择功能
+            }
+        },
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 2000,
+        "next": [
+            "ClickGacha"
+        ]
+    },
+    "ClickGacha": {
+        //有毒，不能点击范围内？,识别改成识别卡包类别进行点击
+        "action": "Click",
+        "recognition": "OCR",
+        "roi": [
+            404,
+            397,
+            144,
+            119
+        ],
+        "expected": "B1a",
+        "threshold": 0.8,
+        "next": [
+            "ClickOpen"
+        ]
+    },
+    "ClickOpen": {
+        "post_delay": 4000,
+        "recognition": "OCR",
+        "expected": "開封",
+        "roi": [
+            299,
+            970,
+            112,
+            57
+        ],
+        "threshold": 0.8,
+        // "only_rec": true,
+        "action": "Click",
+        "next": [
+            "ClickGacha2"
+        ]
+    },
+    "ClickGacha2": {
+        "action": "Click",
+        "recognition": "OCR",
+        "roi": [
+            436,
+            320,
+            89,
+            59
+        ],
+        "expected": "B1a",
+        "threshold": 0.8,
+        "next": [
+            "SwipeGacha"
+        ]
+    },
+    "SwipeGacha": {
+        "repeat_wait_freezes": 500,
+        "action": "Swipe",
+        "end": [
+            90,
+            730
+        ],
+        "begin": [
+            700,
+            729
+        ],
+        "duration": 800,
+        "end_hold": 200,
+        "next": [
+            // "SkipGacha"
+        ]
+    },
+    "SkipGacha": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    560,
+                    1140,
+                    150,
+                    150
+                ],
+                "template": "CardBag/longclick.png"
+            }
+        },
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "duration": 5000,
+        "next": [
+            "ClickContinue"
+        ]
+    },
+    "ClickContinue": {
+        "action": "Click",
+        "recognition": "OCR",
+        "roi": [
+            291,
+            1100,
+            200,
+            200
+        ],
+        "expected": "續",
+        "threshold": 0.8,
+        "next": [
+            "ClickSkip"
+        ]
+    },
+    "ClickSkip": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    568,
+                    1130,
+                    152,
+                    149
+                ],
+                "template": "CardBag/skip.png"
+            }
+        },
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "next": [
+            "ClickSkip",
+            "ClickContinue",
+            "ClickOpen"
+        ]
+    },
+    "GachaOver": {
+        "action": "Click",
+        "recognition": "OCR",
+        "roi": [
+            297,
+            998,
+            137,
+            59
+        ],
+        "expected": "OK",
+        "threshold": 0.8,
+        "next": [
+            // "ClickSkip"
+        ]
+    }
+}
