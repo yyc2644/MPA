@@ -23,9 +23,7 @@
             "type": "Click"
         },
         "post_delay": 1000,
-        "next": [
-            "Gacha"
-        ]
+        "next": []
     },
     "Click_index": {
         "recognition": {
@@ -46,12 +44,31 @@
         },
         "post_delay": 1000,
         "next": [
-            "SelectionSeries"
+            "SelectionSeriesB"
         ]
     },
-    "SelectionSeries": {
+    "SelectionSeriesB": {
         "recognition": "OCR",
         "expected": "B系列",
+        "type": "TemplateMatch",
+        "roi": [
+            90,
+            1078,
+            527,
+            31
+        ],
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": [
+            "SelectionGacha"
+        ]
+    },
+    "SelectionSeriesA": {
+        "recognition": "OCR",
+        "expected": "A系列",
         "type": "TemplateMatch",
         "roi": [
             90,

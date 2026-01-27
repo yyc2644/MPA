@@ -23,28 +23,28 @@
             "type": "Click"
         },
         "post_delay": 1000,
+        "action": "DoNothing",
         "next": [
-            "SelectionSeries"
+            ""
         ]
     },
-    "SelectionSeries": {
+    "Battle_With_Others": {
         "recognition": "OCR",
-        "expected": "B系列",
+        "expected": "与他人对战",
         "type": "TemplateMatch",
         "roi": [
-            90,
-            1078,
-            527,
-            31
+            121,
+            980,
+            137,
+            33
         ],
         "threshold": 0.8,
         "action": {
             "type": "Click"
         },
         "post_delay": 1000,
-        "next": [
-            "SelectionGacha"
-        ]
+        "action": "DoNothing",
+        "next": []
     },
     "SelectionGacha": {
         "recognition": {

@@ -1,0 +1,29 @@
+{
+    "BeginnerGuide": {
+        "next": [
+            "Click_index"
+        ],
+    },
+    "Click_Fight"{
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    467,
+                    1209,
+                    53,
+                    50
+                ]
+            },
+            "template": "BeginnerGuide/fight.png"
+        }
+    },
+    "threshold": 0.8,
+    "action": {
+        "type": "Click"
+    },
+    "post_delay": 1000,
+    "next": [
+        "SelectionSeriesB"
+    ]
+}

@@ -5,11 +5,6 @@
         ///2.检查是否测到主页关键词 （得卡挑战，商店）
         ///3.关闭通知
         ///4.如果在抽卡页面，返回主页
-        ///1、启动游戏
-        ///1、启动游戏
-        ///1、启动游戏
-        ///1、启动游戏
-        ///1、启动游戏
         "post_wait_freezes": 300,
         "next": [
             "StartPTCG"
@@ -75,6 +70,20 @@
         "next": [
             "BackMain"
         ]
+    },
+    "[JumpBack]NetworkError": {
+        "post_delay": 2000,
+        "recognition": "OCR",
+        "expected": "一次",
+        "roi": [
+            280,
+            870,
+            150,
+            40
+        ],
+        "threshold": 0.8,
+        "action": "Click",
+        "next": []
     },
     // "Back": {
     //     "recognition": {
