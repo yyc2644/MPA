@@ -2,9 +2,9 @@
     "BeginnerGuide": {
         "next": [
             "Click_index"
-        ],
+        ]
     },
-    "Click_Fight"{
+    "Click_Fight": {
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -16,14 +16,14 @@
                 ]
             },
             "template": "BeginnerGuide/fight.png"
-        }
-    },
-    "threshold": 0.8,
-    "action": {
-        "type": "Click"
-    },
-    "post_delay": 1000,
-    "next": [
-        "SelectionSeriesB"
-    ]
+        },
+        "threshold": 0.8,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 1000,
+        "next": [
+            "SelectionSeriesB"
+        ]
+    }
 }
