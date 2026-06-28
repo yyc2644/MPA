@@ -1,7 +1,7 @@
 {
     "BeginnerGuide": {
         "next": [
-            "Click_index"
+            "Click_Fight"
         ]
     },
     "Click_Fight": {
@@ -23,7 +23,6 @@
         },
         "post_delay": 1000,
         "next": [
-            "SelectionSeriesB"
         ]
     }
 }

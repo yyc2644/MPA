@@ -1,0 +1,107 @@
+{
+    "DailyRoutine": {
+        "next": [
+            "StartUp",
+            "ClaimGifts",
+            "Gacha",
+            "WonderPick",
+            "ShopFree",
+            "ClaimMissions"
+        ]
+    },
+    "AccountBootstrap": {
+        "next": [
+            "StartUp",
+            "AccountManualLoginNotice",
+            "AccountLinkCheck"
+        ]
+    },
+    "AccountManualLoginNotice": {
+        "action": "DoNothing",
+        "next": []
+    },
+    "AccountLinkCheck": {
+        "action": "DoNothing",
+        "next": []
+    },
+    "ClaimGifts": {
+        "next": [
+            "StartUp",
+            "ClaimGiftsPlaceholder"
+        ]
+    },
+    "ClaimGiftsPlaceholder": {
+        "action": "DoNothing",
+        "next": []
+    },
+    "WonderPick": {
+        "next": [
+            "StartUp",
+            "WonderPickPlaceholder"
+        ]
+    },
+    "WonderPickPlaceholder": {
+        "action": "DoNothing",
+        "next": []
+    },
+    "ShopFree": {
+        "next": [
+            "StartUp",
+            "ShopFreePlaceholder"
+        ]
+    },
+    "ShopFreePlaceholder": {
+        "action": "DoNothing",
+        "next": []
+    },
+    "ClaimMissions": {
+        "next": [
+            "StartUp",
+            "ClaimMissionsPlaceholder"
+        ]
+    },
+    "ClaimMissionsPlaceholder": {
+        "action": "DoNothing",
+        "next": []
+    },
+    "SoloBattle": {
+        "next": [
+            "StartUp",
+            "SoloBattlePlaceholder"
+        ]
+    },
+    "SoloBattlePlaceholder": {
+        "action": "DoNothing",
+        "next": []
+    },
+    "VersusBattle": {
+        "next": [
+            "StartUp",
+            "VersusBattlePlaceholder"
+        ]
+    },
+    "VersusBattlePlaceholder": {
+        "action": "DoNothing",
+        "next": []
+    },
+    "ShareCard": {
+        "next": [
+            "StartUp",
+            "ShareCardPlaceholder"
+        ]
+    },
+    "ShareCardPlaceholder": {
+        "action": "DoNothing",
+        "next": []
+    },
+    "TradeCard": {
+        "next": [
+            "StartUp",
+            "TradeCardPlaceholder"
+        ]
+    },
+    "TradeCardPlaceholder": {
+        "action": "DoNothing",
+        "next": []
+    }
+}

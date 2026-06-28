@@ -1,0 +1,115 @@
+{
+    "interface_version": 2,
+    "name": "MPA",
+    "label": "MPA - Pokemon TCG Pocket Assistant",
+    "title": "MPA: Pokemon TCG Pocket Assistant",
+    "version": "v0.0.1",
+    "icon": "resource/base/image/logo.png",
+    "description": "Pokemon TCG Pocket automation project based on MaaFramework.",
+    "controller": [
+        {
+            "name": "android",
+            "type": "Adb",
+            "label": "Android / Emulator"
+        }
+    ],
+    "resource": [
+        {
+            "name": "base",
+            "label": "Base Resource",
+            "path": [
+                "resource/base"
+            ],
+            "controller": [
+                "android"
+            ]
+        }
+    ],
+    "agent": {
+        "child_exec": "python",
+        "child_args": [
+            "agent/main.py",
+            "{identifier}"
+        ]
+    },
+    "task": [
+        {
+            "name": "daily_routine",
+            "label": "每日流程",
+            "entry": "DailyRoutine",
+            "default_check": true,
+            "description": "启动游戏后依次尝试领取礼物、免费卡包、得卡挑战、商店免费项和任务奖励。当前为骨架流程，需要继续补充识别资源。"
+        },
+        {
+            "name": "startup",
+            "label": "启动并回到主页",
+            "entry": "StartUp",
+            "description": "启动 Pokemon TCG Pocket，处理标题页、通知弹窗，并尽量回到主页。"
+        },
+        {
+            "name": "stop",
+            "label": "关闭游戏",
+            "entry": "StopPTCG"
+        },
+        {
+            "name": "account_bootstrap",
+            "label": "登录/账号绑定检查",
+            "entry": "AccountBootstrap",
+            "description": "只负责定位登录和账号绑定入口；第三方账号密码、验证码和授权确认需要手动完成。"
+        },
+        {
+            "name": "gacha",
+            "label": "自动抽卡",
+            "entry": "Gacha",
+            "description": "打开免费卡包。当前已有基础流程，仍需按语言和扩展包继续增强。"
+        },
+        {
+            "name": "wonder_pick",
+            "label": "得卡挑战",
+            "entry": "WonderPick",
+            "description": "进入 Wonder Pick / 得卡挑战并选择可用目标。当前为骨架流程。"
+        },
+        {
+            "name": "claim_gifts",
+            "label": "领取礼物",
+            "entry": "ClaimGifts",
+            "description": "领取 Gifts 中未领取且未过期的物品。当前为骨架流程。"
+        },
+        {
+            "name": "shop_free",
+            "label": "商店免费项",
+            "entry": "ShopFree",
+            "description": "检查商店中的每日免费商品、活动兑换和高级通行证免费项。当前为骨架流程。"
+        },
+        {
+            "name": "claim_missions",
+            "label": "领取任务奖励",
+            "entry": "ClaimMissions",
+            "description": "领取每日、活动和高级任务奖励。当前为骨架流程。"
+        },
+        {
+            "name": "solo_battle",
+            "label": "机器人对战",
+            "entry": "SoloBattle",
+            "description": "进入 Solo Battle，后续可扩展自动出牌、自动投降或刷活动奖励。当前为骨架流程。"
+        },
+        {
+            "name": "versus_battle",
+            "label": "真人对战",
+            "entry": "VersusBattle",
+            "description": "进入 Versus / Ranked / Private Match。真人对战自动化需谨慎控制策略和重连。当前为骨架流程。"
+        },
+        {
+            "name": "share_card",
+            "label": "送卡",
+            "entry": "ShareCard",
+            "description": "通过 Social Hub 的 Share 给好友送卡；功能需开服 14 天后解锁，且接收方每日有领取限制。当前为骨架流程。"
+        },
+        {
+            "name": "trade_card",
+            "label": "交换卡牌",
+            "entry": "TradeCard",
+            "description": "通过 Social Hub 的 Trade 和好友交换卡牌；功能需开服 14 天后解锁，同一时间只能进行一个交易。当前为骨架流程。"
+        }
+    ]
+}
