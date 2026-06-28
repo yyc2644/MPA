@@ -65,13 +65,6 @@
             "entry": "StopPTCG"
         },
         {
-            "name": "account_bootstrap",
-            "label": "$task.account_bootstrap.label",
-            "entry": "AccountBootstrap",
-            "description": "$task.account_bootstrap.description",
-            "doc": "resource/base/docs/tasks/account_bootstrap.md"
-        },
-        {
             "name": "gacha",
             "label": "$task.gacha.label",
             "entry": "Gacha",

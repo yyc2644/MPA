@@ -11,8 +11,6 @@
     "task.startup.label": "Start And Return Home",
     "task.startup.description": "Start Pokemon TCG Pocket, handle title screen and notification popups, then return to Home.",
     "task.stop.label": "Stop Game",
-    "task.account_bootstrap.label": "Login / Account Check",
-    "task.account_bootstrap.description": "Only locates login and account-linking screens. Third-party passwords, verification codes, and authorization prompts must be handled manually.",
     "task.gacha.label": "Open Packs",
     "task.gacha.description": "Open free booster packs. The current flow is basic and still needs expansion pack and language hardening.",
     "task.wonder_pick.label": "Wonder Pick",

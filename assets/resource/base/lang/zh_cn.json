@@ -11,8 +11,6 @@
     "task.startup.label": "启动并回到主页",
     "task.startup.description": "启动 Pokemon TCG Pocket，处理标题页、通知弹窗，并尽量回到主页。",
     "task.stop.label": "关闭游戏",
-    "task.account_bootstrap.label": "登录/账号绑定检查",
-    "task.account_bootstrap.description": "只负责定位登录和账号绑定入口；第三方账号密码、验证码和授权确认需要手动完成。",
     "task.gacha.label": "自动抽卡",
     "task.gacha.description": "打开免费卡包。当前已有基础流程，仍需按语言和扩展包继续增强。",
     "task.wonder_pick.label": "得卡挑战",

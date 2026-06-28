@@ -1,6 +1,6 @@
 {
     // Copy this file to config/multi_instance.jsonc and fill in your real emulator ADB ports.
-    // Do not commit the real file if it contains account names or private notes.
+    // Do not commit the real file if it contains emulator names, ports, or private notes.
     "instances": [
         {
             "name": "ptcgp-01",

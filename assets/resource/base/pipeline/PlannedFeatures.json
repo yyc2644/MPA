@@ -9,21 +9,6 @@
             "ClaimMissions"
         ]
     },
-    "AccountBootstrap": {
-        "next": [
-            "StartUp",
-            "AccountManualLoginNotice",
-            "AccountLinkCheck"
-        ]
-    },
-    "AccountManualLoginNotice": {
-        "action": "DoNothing",
-        "next": []
-    },
-    "AccountLinkCheck": {
-        "action": "DoNothing",
-        "next": []
-    },
     "ClaimGifts": {
         "next": [
             "StartUp",
