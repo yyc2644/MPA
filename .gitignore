@@ -1,6 +1,9 @@
 # docs
 docs/node_modules
 docs/.vuepress/.temp
+
+# Local multi-account runner config
+config/multi_instance.jsonc
 # Prerequisites
 *.d
 
@@ -450,5 +453,6 @@ install
 # Tools
 tools/ImageCropper/**/*.png
 
-config
+config/*
+!config/*.example.jsonc
 debug

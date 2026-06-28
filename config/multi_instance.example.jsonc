@@ -1,0 +1,29 @@
+{
+    // Copy this file to config/multi_instance.jsonc and fill in your real emulator ADB ports.
+    // Do not commit the real file if it contains account names or private notes.
+    "instances": [
+        {
+            "name": "ptcgp-01",
+            // Optional: launch this emulator before connecting ADB.
+            // Use a string for shell commands, or an array for direct subprocess arguments.
+            "start_command": "open -a MuMuPlayer",
+            "startup_wait": 45,
+            "adb_path": "/Applications/MuMuPlayer.app/Contents/MacOS/adb",
+            "address": "127.0.0.1:16384",
+            "task": "DailyRoutine",
+            // Optional: close this emulator after the task finishes.
+            "stop_command": "",
+            "enabled": true
+        },
+        {
+            "name": "ptcgp-02",
+            "start_command": "",
+            "startup_wait": 45,
+            "adb_path": "/Applications/MuMuPlayer.app/Contents/MacOS/adb",
+            "address": "127.0.0.1:16416",
+            "task": "DailyRoutine",
+            "stop_command": "",
+            "enabled": false
+        }
+    ]
+}
