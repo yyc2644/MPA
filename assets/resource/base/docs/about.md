@@ -13,3 +13,7 @@ MPA 面向 Pokemon TCG Pocket 的日常自动化，目标是把免费卡包、�
 ## 前端
 
 本项目通过 `interface.json` 接入 MFAAvalonia。MFAAvalonia 会读取任务、资源、控制器、多语言和文档配置，并生成通用图形界面。
+
+## 日志
+
+多模拟器 runner 默认将运行日志保存到 `debug/multi_instance/YYYYMMDD-HHMMSS/`。反馈问题时，请附带对应目录下的 `session.log`、MaaFramework 日志和错误截图。

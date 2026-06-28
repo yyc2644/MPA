@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import contextlib
 import json
 import subprocess
 import sys
 import time
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
@@ -17,13 +19,28 @@ except ModuleNotFoundError:
 
 from maa.controller import AdbController
 from maa.resource import Resource
-from maa.tasker import Tasker
+from maa.tasker import LoggingLevelEnum, Tasker
 from maa.toolkit import Toolkit
 
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_RESOURCE = ROOT_DIR / "assets" / "resource" / "base"
 DEFAULT_CONFIG = ROOT_DIR / "config" / "multi_instance.jsonc"
+DEFAULT_LOG_DIR = ROOT_DIR / "debug" / "multi_instance"
+
+
+class Tee:
+    def __init__(self, *streams: Any):
+        self.streams = streams
+
+    def write(self, data: str) -> None:
+        for stream in self.streams:
+            stream.write(data)
+            stream.flush()
+
+    def flush(self) -> None:
+        for stream in self.streams:
+            stream.flush()
 
 
 @dataclass
@@ -47,6 +64,29 @@ def load_jsonc(path: Path) -> Dict[str, Any]:
         if jsonc is not None:
             return jsonc.load(file)
         return json.load(file)
+
+
+def parse_logging_level(value: str) -> LoggingLevelEnum:
+    try:
+        return LoggingLevelEnum[value.capitalize()]
+    except KeyError as exc:
+        names = ", ".join(level.name for level in LoggingLevelEnum)
+        raise argparse.ArgumentTypeError(f"Invalid logging level '{value}'. Choose one of: {names}") from exc
+
+
+def configure_debug_output(args: argparse.Namespace) -> Path:
+    run_id = datetime.now().strftime("%Y%m%d-%H%M%S")
+    log_dir = Path(args.log_dir).expanduser().resolve() / run_id
+    log_dir.mkdir(parents=True, exist_ok=True)
+
+    Tasker.set_log_dir(log_dir)
+    Tasker.set_stdout_level(args.stdout_level)
+    Tasker.set_save_on_error(args.save_on_error)
+    Tasker.set_save_draw(args.save_draw)
+    Tasker.set_recording(args.recording)
+    Tasker.set_debug_mode(args.debug_mode)
+
+    return log_dir
 
 
 def normalize_instances(raw: Iterable[Dict[str, Any]], default_task: str) -> List[InstanceConfig]:
@@ -214,12 +254,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stagger", type=float, default=2.0, help="Seconds to wait between instance starts.")
     parser.add_argument("--discover", action="store_true", help="Discover connected ADB devices instead of reading config.")
     parser.add_argument("--adb", default=None, help="ADB path used by device discovery.")
+    parser.add_argument("--log-dir", default=str(DEFAULT_LOG_DIR), help="Directory for Maa and runner debug logs.")
+    parser.add_argument(
+        "--stdout-level",
+        type=parse_logging_level,
+        default=LoggingLevelEnum.Info,
+        help="Maa stdout logging level: Off, Fatal, Error, Warn, Info, Debug, Trace, or All.",
+    )
+    parser.add_argument("--save-draw", action="store_true", help="Save recognition draw images for debugging.")
+    parser.add_argument("--no-save-on-error", dest="save_on_error", action="store_false", help="Do not save error screenshots.")
+    parser.add_argument("--recording", action="store_true", help="Enable Maa action recording output.")
+    parser.add_argument("--debug-mode", action="store_true", help="Enable Maa debug mode.")
+    parser.set_defaults(save_on_error=True)
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     Toolkit.init_option(str(ROOT_DIR))
+    log_dir = configure_debug_output(args)
 
     resource_dir = Path(args.resource).expanduser().resolve()
     instances = build_instances(args)
@@ -229,6 +282,22 @@ def main() -> int:
 
     max_workers = max(1, min(args.max_workers, len(instances)))
     mode = "serial" if max_workers == 1 else "parallel"
+    runner_log = log_dir / "session.log"
+    with runner_log.open("a", encoding="utf-8") as log_file:
+        with contextlib.redirect_stdout(Tee(sys.stdout, log_file)):
+            with contextlib.redirect_stderr(Tee(sys.stderr, log_file)):
+                return run_all(args, instances, resource_dir, max_workers, mode, log_dir)
+
+
+def run_all(
+    args: argparse.Namespace,
+    instances: List[InstanceConfig],
+    resource_dir: Path,
+    max_workers: int,
+    mode: str,
+    log_dir: Path,
+) -> int:
+    print(f"Debug log directory: {log_dir}")
     print(f"Running {len(instances)} instance(s), mode={mode}, max_workers={max_workers}, task={args.task}")
 
     if max_workers == 1:

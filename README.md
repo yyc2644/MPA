@@ -93,6 +93,30 @@ python tools/multi_instance_runner.py --config config/multi_instance.jsonc --tas
 
 默认 `--max-workers 1`，也就是一个号跑完再跑下一个。每个实例可配置 `start_command`、`startup_wait` 和 `stop_command`。
 
+## 日志与排查
+
+MFAAvalonia 和 MaaFramework 会生成框架运行日志。多模拟器串行 runner 也已接入项目级日志，默认输出到：
+
+```text
+debug/multi_instance/YYYYMMDD-HHMMSS/
+```
+
+其中：
+
+- `session.log`：runner 自己的流程日志，包含启动模拟器、连接 ADB、执行任务、失败原因和汇总。
+- MaaFramework 日志：由 `Tasker.set_log_dir` 写入同一目录，用于排查识别、点击、截图、控制器等底层问题。
+- 错误现场：默认开启 `save_on_error`，任务失败时会尽量保存错误截图。
+
+常用调试参数：
+
+```bash
+python tools/multi_instance_runner.py --config config/multi_instance.jsonc --task DailyRoutine --stdout-level Debug
+python tools/multi_instance_runner.py --config config/multi_instance.jsonc --task DailyRoutine --save-draw
+python tools/multi_instance_runner.py --config config/multi_instance.jsonc --task DailyRoutine --recording
+```
+
+`--save-draw` 会保存识别绘制图，适合排查 ROI 和模板匹配问题，但文件量较大；日常运行建议只保留默认错误截图。反馈问题时，请优先提供对应时间目录下的 `session.log`、Maa 日志和错误截图。
+
 ## 开发和校验
 
 安装工具依赖：
