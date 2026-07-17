@@ -23,7 +23,7 @@ MPA 目前处于早期开发阶段。仓库已经补齐 MaaFramework 项目结�
 
 请特别注意：
 
-- 已通过本地校验：`assets/interface.json` schema、`assets/resource/base` 资源加载、前端文档路径引用。
+- 已接入自动校验：`assets/interface.json` schema、`assets/resource/base` 资源加载、前端文档路径引用。
 - 未完成整包自测：MFAAvalonia release 包尚未在真实机器上完整启动验证。
 - 未完成真机/模拟器回放：除已有启动/抽卡草稿外，多数任务缺少真实截图、ROI 和模板资源。
 - 不保存、输入或管理账号密码、验证码；项目只面向用户已经手动登录完成的模拟器。
@@ -33,12 +33,12 @@ MPA 目前处于早期开发阶段。仓库已经补齐 MaaFramework 项目结�
 
 | 功能 | 入口 | 当前状态 | 自测状态 | 说明 |
 | --- | --- | --- | --- | --- |
-| MFAAvalonia 前端 | `assets/interface.json` | 已接入 | 已做 schema/路径校验，未做完整打包启动自测 | 已配置多语言、欢迎页、关于页、任务文档和资源包 |
+| MFAAvalonia 前端 | `assets/interface.json` | 已接入 | 已接入 schema/资源 CI，未做完整打包启动自测 | 已配置多语言、欢迎页、关于页、任务文档、每日步骤开关和卡包系列选择 |
 | 启动并回到主页 | `StartUp` | 基础 pipeline 已存在 | 未做最新模拟器回放 | 支持启动游戏、标题页点击、关闭通知、回主页；异常弹窗仍需增强 |
 | 关闭游戏 | `StopPTCG` | 基础 pipeline 已存在 | 未做最新模拟器回放 | 使用 `StopApp` 关闭包名 `jp.pokemon.pokemontcgp` |
 | 自动抽卡 | `Gacha` | 已接入 19 个扩充包的前端选择配置 | 已完成一次 B3b 模拟器回放；完整自动闭环仍待修复 | 默认 B3b，可切换 A/B 系列并按名称查找目标卡包；开封手势、结果页和异常处理仍需完善 |
 | 新手/对战入口 | `BeginnerGuide` | 草稿 pipeline 已存在 | 未做最新模拟器回放 | 已修正入口不再误跳抽卡；后续仍需完整流程设计 |
-| 每日流程 | `DailyRoutine` | 已接任务入口和骨架 | 未自测 | 串联启动、礼物、抽卡、得卡挑战、商店、任务奖励；子流程多数还是占位 |
+| 每日流程 | `DailyRoutine` | 已修复顺序编排并接入前端开关 | 已做资源静态校验，未做模拟器回放 | 使用 `[JumpBack]` 和 `max_hit` 串行执行；启动默认开启，未完成的子流程默认关闭 |
 | 领取礼物 | `ClaimGifts` | 骨架 | 未自测 | 缺截图、ROI、按钮模板和过期礼物处理 |
 | 得卡挑战 | `WonderPick` | 骨架 | 未自测 | 缺目标选择策略、资源消耗保护和截图模板 |
 | 商店免费项 | `ShopFree` | 骨架 | 未自测 | 缺每日免费项、活动页签、通行证页签识别 |
@@ -71,7 +71,9 @@ MPA 目前处于早期开发阶段。仓库已经补齐 MaaFramework 项目结�
 
 ### 2. 使用 MFAAvalonia 前端
 
-本项目通过 `assets/interface.json` 接入 MFAAvalonia。GitHub Actions 的 `install.yml` 会下载 MaaFramework 和 MFAAvalonia，并生成带前端的 `MPA-{os}-{arch}` 产物。
+本项目通过 `assets/interface.json` 接入 MFAAvalonia。GitHub Actions 的 `install.yml` 会下载 MaaFramework 和 MFAAvalonia，并生成带前端的 `MPA-{os}-{arch}` 产物。每日流程的步骤开关和开包系列选择会由 `option.pipeline_override` 映射到 Maa Pipeline。
+
+当前任务未使用 Python 自定义识别/动作，因此发布包暂不启动 Python Agent，不依赖用户额外安装 Python。后续加入实际 Agent 逻辑时再改为项目内嵌 Python。
 
 更多说明见 [MFAAvalonia 集成说明](docs/zh_cn/MFAAvalonia集成.md)。
 
@@ -129,20 +131,7 @@ python -m pip install maafw --pre jsonschema
 校验前端接口：
 
 ```bash
-python - <<'PY'
-import json
-from pathlib import Path
-import jsonschema
-
-schema = json.loads(Path("deps/tools/interface.schema.json").read_text())
-data = json.loads(Path("assets/interface.json").read_text())
-errors = sorted(jsonschema.Draft7Validator(schema).iter_errors(data), key=lambda e: list(e.path))
-if errors:
-    for error in errors:
-        print("/".join(map(str, error.path)) or "<root>", error.message)
-    raise SystemExit(1)
-print("interface ok")
-PY
+python tools/check_interface.py
 ```
 
 校验 Maa 资源：

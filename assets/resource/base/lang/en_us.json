@@ -7,7 +7,7 @@
     "resource.base.label": "Base Resource",
     "resource.base.description": "Default Pokemon TCG Pocket resources, recognition templates, and task pipelines.",
     "task.daily_routine.label": "Daily Routine",
-    "task.daily_routine.description": "Start the game, then try gifts, free packs, Wonder Pick, shop freebies, and mission rewards.",
+    "task.daily_routine.description": "Run enabled daily steps in order. Unimplemented steps are disabled by default.",
     "task.startup.label": "Start And Return Home",
     "task.startup.description": "Start Pokemon TCG Pocket, handle title screen and notification popups, then return to Home.",
     "task.stop.label": "Stop Game",
@@ -49,5 +49,18 @@
     "task.share_card.label": "Share Card",
     "task.share_card.description": "Use Social Hub Share to send a card to a friend. The feature unlocks after 14 days and recipients have daily limits.",
     "task.trade_card.label": "Trade Card",
-    "task.trade_card.description": "Use Social Hub Trade with friends. The feature unlocks after 14 days and only one trade can be active at a time."
+    "task.trade_card.description": "Use Social Hub Trade with friends. The feature unlocks after 14 days and only one trade can be active at a time.",
+    "option.daily_startup.label": "Start And Return Home",
+    "option.daily_startup.description": "Start the game and confirm the Home screen before running the daily routine.",
+    "option.daily_claim_gifts.label": "Claim Gifts",
+    "option.daily_gacha.label": "Open Free Pack",
+    "option.daily_gacha.description": "The current pack flow still relies on a fixed pack and fixed recognition regions, so it is disabled by default.",
+    "option.daily_wonder_pick.label": "Run Wonder Pick",
+    "option.daily_shop_free.label": "Claim Shop Freebies",
+    "option.daily_claim_missions.label": "Claim Mission Rewards",
+    "option.wip.description": "This step is still a placeholder. Enabling it produces no reward and is intended only for future integration testing.",
+    "option.gacha_series.label": "Pack Series",
+    "option.gacha_series.description": "Select the series tab recognized by the pack flow. The pack cover is still fixed to Super Charizard.",
+    "option.gacha_series.a": "Series A",
+    "option.gacha_series.b": "Series B"
 }

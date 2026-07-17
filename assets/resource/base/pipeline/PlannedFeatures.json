@@ -1,18 +1,79 @@
 {
     "DailyRoutine": {
+        // Each enabled step is executed once. JumpBack returns here after the
+        // selected sub-task finishes, then max_hit skips completed steps.
         "next": [
-            "StartUp",
-            "ClaimGifts",
-            "Gacha",
-            "WonderPick",
-            "ShopFree",
-            "ClaimMissions"
+            "[JumpBack]DailyStepStartUp",
+            "[JumpBack]DailyStepClaimGifts",
+            "[JumpBack]DailyStepGacha",
+            "[JumpBack]DailyStepWonderPick",
+            "[JumpBack]DailyStepShopFree",
+            "[JumpBack]DailyStepClaimMissions",
+            "DailyRoutineDone"
         ]
+    },
+    "DailyStepStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
+        ]
+    },
+    "DailyStepClaimGifts": {
+        "enabled": false,
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "ClaimGiftsPlaceholder"
+        ]
+    },
+    "DailyStepGacha": {
+        "enabled": false,
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "Click_index"
+        ]
+    },
+    "DailyStepWonderPick": {
+        "enabled": false,
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "WonderPickPlaceholder"
+        ]
+    },
+    "DailyStepShopFree": {
+        "enabled": false,
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "ShopFreePlaceholder"
+        ]
+    },
+    "DailyStepClaimMissions": {
+        "enabled": false,
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "ClaimMissionsPlaceholder"
+        ]
+    },
+    "DailyRoutineDone": {
+        "action": "DoNothing",
+        "next": []
     },
     "ClaimGifts": {
         "next": [
-            "StartUp",
+            "[JumpBack]ClaimGiftsStartUp",
             "ClaimGiftsPlaceholder"
+        ]
+    },
+    "ClaimGiftsStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
         ]
     },
     "ClaimGiftsPlaceholder": {
@@ -21,8 +82,15 @@
     },
     "WonderPick": {
         "next": [
-            "StartUp",
+            "[JumpBack]WonderPickStartUp",
             "WonderPickPlaceholder"
+        ]
+    },
+    "WonderPickStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
         ]
     },
     "WonderPickPlaceholder": {
@@ -31,8 +99,15 @@
     },
     "ShopFree": {
         "next": [
-            "StartUp",
+            "[JumpBack]ShopFreeStartUp",
             "ShopFreePlaceholder"
+        ]
+    },
+    "ShopFreeStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
         ]
     },
     "ShopFreePlaceholder": {
@@ -41,8 +116,15 @@
     },
     "ClaimMissions": {
         "next": [
-            "StartUp",
+            "[JumpBack]ClaimMissionsStartUp",
             "ClaimMissionsPlaceholder"
+        ]
+    },
+    "ClaimMissionsStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
         ]
     },
     "ClaimMissionsPlaceholder": {
@@ -51,8 +133,15 @@
     },
     "SoloBattle": {
         "next": [
-            "StartUp",
+            "[JumpBack]SoloBattleStartUp",
             "SoloBattlePlaceholder"
+        ]
+    },
+    "SoloBattleStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
         ]
     },
     "SoloBattlePlaceholder": {
@@ -61,8 +150,15 @@
     },
     "VersusBattle": {
         "next": [
-            "StartUp",
+            "[JumpBack]VersusBattleStartUp",
             "VersusBattlePlaceholder"
+        ]
+    },
+    "VersusBattleStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
         ]
     },
     "VersusBattlePlaceholder": {
@@ -71,8 +167,15 @@
     },
     "ShareCard": {
         "next": [
-            "StartUp",
+            "[JumpBack]ShareCardStartUp",
             "ShareCardPlaceholder"
+        ]
+    },
+    "ShareCardStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
         ]
     },
     "ShareCardPlaceholder": {
@@ -81,8 +184,15 @@
     },
     "TradeCard": {
         "next": [
-            "StartUp",
+            "[JumpBack]TradeCardStartUp",
             "TradeCardPlaceholder"
+        ]
+    },
+    "TradeCardStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
         ]
     },
     "TradeCardPlaceholder": {

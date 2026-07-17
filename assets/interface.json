@@ -333,5 +333,181 @@
             "description": "$task.trade_card.description",
             "doc": "resource/base/docs/tasks/social.md"
         }
-    ]
+    ],
+    "option": {
+        "daily_startup": {
+            "type": "switch",
+            "label": "$option.daily_startup.label",
+            "description": "$option.daily_startup.description",
+            "default_case": "Yes",
+            "cases": [
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "DailyStepStartUp": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "DailyStepStartUp": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "daily_claim_gifts": {
+            "type": "switch",
+            "label": "$option.daily_claim_gifts.label",
+            "description": "$option.wip.description",
+            "default_case": "No",
+            "cases": [
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "DailyStepClaimGifts": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "DailyStepClaimGifts": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "daily_gacha": {
+            "type": "switch",
+            "label": "$option.daily_gacha.label",
+            "description": "$option.daily_gacha.description",
+            "default_case": "No",
+            "cases": [
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "DailyStepGacha": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "DailyStepGacha": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "daily_wonder_pick": {
+            "type": "switch",
+            "label": "$option.daily_wonder_pick.label",
+            "description": "$option.wip.description",
+            "default_case": "No",
+            "cases": [
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "DailyStepWonderPick": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "DailyStepWonderPick": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "daily_shop_free": {
+            "type": "switch",
+            "label": "$option.daily_shop_free.label",
+            "description": "$option.wip.description",
+            "default_case": "No",
+            "cases": [
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "DailyStepShopFree": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "DailyStepShopFree": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "daily_claim_missions": {
+            "type": "switch",
+            "label": "$option.daily_claim_missions.label",
+            "description": "$option.wip.description",
+            "default_case": "No",
+            "cases": [
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "DailyStepClaimMissions": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "DailyStepClaimMissions": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ]
+        },
+        "gacha_series": {
+            "type": "select",
+            "label": "$option.gacha_series.label",
+            "description": "$option.gacha_series.description",
+            "default_case": "SeriesB",
+            "cases": [
+                {
+                    "name": "SeriesA",
+                    "label": "$option.gacha_series.a",
+                    "pipeline_override": {
+                        "Click_index": {
+                            "next": [
+                                "SelectionSeriesA"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "SeriesB",
+                    "label": "$option.gacha_series.b",
+                    "pipeline_override": {
+                        "Click_index": {
+                            "next": [
+                                "SelectionSeriesB"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    }
 }

@@ -16,6 +16,7 @@
         "package": "jp.pokemon.pokemontcgp",
         "next": [
             "[JumpBack]ClickPokemonLogo",
+            "[JumpBack]NetworkError",
             "[JumpBack]CloseNotify",
             "[JumpBack]BackMain",
             "CheckMain"
@@ -71,7 +72,7 @@
             "BackMain"
         ]
     },
-    "[JumpBack]NetworkError": {
+    "NetworkError": {
         "post_delay": 2000,
         "recognition": "OCR",
         "expected": "一次",

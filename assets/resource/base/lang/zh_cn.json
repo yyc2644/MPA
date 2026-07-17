@@ -7,7 +7,7 @@
     "resource.base.label": "基础资源包",
     "resource.base.description": "Pokemon TCG Pocket 默认资源、识别模板和任务管线。",
     "task.daily_routine.label": "每日流程",
-    "task.daily_routine.description": "启动游戏后依次尝试领取礼物、免费卡包、得卡挑战、商店免费项和任务奖励。",
+    "task.daily_routine.description": "按前端开关依次执行每日步骤；尚未完成的步骤默认关闭。",
     "task.startup.label": "启动并回到主页",
     "task.startup.description": "启动 Pokemon TCG Pocket，处理标题页、通知弹窗，并尽量回到主页。",
     "task.stop.label": "关闭游戏",
@@ -49,5 +49,18 @@
     "task.share_card.label": "送卡",
     "task.share_card.description": "通过 Social Hub 的 Share 给好友送卡；功能需开服 14 天后解锁，且接收方每日有领取限制。当前为骨架流程。",
     "task.trade_card.label": "交换卡牌",
-    "task.trade_card.description": "通过 Social Hub 的 Trade 和好友交换卡牌；功能需开服 14 天后解锁，同一时间只能进行一个交易。当前为骨架流程。"
+    "task.trade_card.description": "通过 Social Hub 的 Trade 和好友交换卡牌；功能需开服 14 天后解锁，同一时间只能进行一个交易。当前为骨架流程。",
+    "option.daily_startup.label": "启动并回到主页",
+    "option.daily_startup.description": "每日流程开始时启动游戏并确认已经回到主页。",
+    "option.daily_claim_gifts.label": "领取礼物",
+    "option.daily_gacha.label": "打开免费卡包",
+    "option.daily_gacha.description": "当前开包流程仍依赖固定卡包和识别区域，默认关闭。",
+    "option.daily_wonder_pick.label": "执行得卡挑战",
+    "option.daily_shop_free.label": "领取商店免费项",
+    "option.daily_claim_missions.label": "领取任务奖励",
+    "option.wip.description": "该步骤目前仍是占位流程，启用后不会产生实际收益，仅用于后续联调。",
+    "option.gacha_series.label": "卡包系列",
+    "option.gacha_series.description": "选择开包流程识别的系列页签；具体卡包封面目前仍固定为超级喷火龙。",
+    "option.gacha_series.a": "A 系列",
+    "option.gacha_series.b": "B 系列"
 }

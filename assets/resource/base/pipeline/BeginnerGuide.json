@@ -13,9 +13,9 @@
                     1209,
                     53,
                     50
-                ]
-            },
-            "template": "BeginnerGuide/fight.png"
+                ],
+                "template": "BeginnerGuide/fight.png"
+            }
         },
         "threshold": 0.8,
         "action": {

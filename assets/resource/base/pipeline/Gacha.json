@@ -1,9 +1,17 @@
 {
     "Gacha": {
         "next": [
+            "[JumpBack]GachaStartUp",
             "Click_index"
         ],
         "post_delay": 1000
+    },
+    "GachaStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
+        ]
     },
     "Check_point": {
         // TODO: add a real template/ROI when pack-point claiming is implemented.
@@ -36,7 +44,6 @@
     "SelectionSeriesB": {
         "recognition": "OCR",
         "expected": "B系列",
-        "type": "TemplateMatch",
         "roi": [
             90,
             1078,
@@ -56,7 +63,6 @@
     "SelectionSeriesA": {
         "recognition": "OCR",
         "expected": "A系列",
-        "type": "TemplateMatch",
         "roi": [
             90,
             1078,
