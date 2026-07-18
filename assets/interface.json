@@ -44,6 +44,206 @@
             "{identifier}"
         ]
     },
+    "option": {
+        "gacha_pack": {
+            "type": "select",
+            "label": "$option.gacha_pack.label",
+            "description": "$option.gacha_pack.description",
+            "default_case": "B3b",
+            "cases": [
+                {
+                    "name": "A1",
+                    "label": "$pack.a1.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "最強的基因" },
+                        "ClickGacha": { "expected": "A1" },
+                        "ClickGacha2": { "expected": "A1" }
+                    }
+                },
+                {
+                    "name": "A1a",
+                    "label": "$pack.a1a.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "幻遊島" },
+                        "ClickGacha": { "expected": "A1a" },
+                        "ClickGacha2": { "expected": "A1a" }
+                    }
+                },
+                {
+                    "name": "A2",
+                    "label": "$pack.a2.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "時空激鬥" },
+                        "ClickGacha": { "expected": "A2" },
+                        "ClickGacha2": { "expected": "A2" }
+                    }
+                },
+                {
+                    "name": "A2a",
+                    "label": "$pack.a2a.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "超克之光" },
+                        "ClickGacha": { "expected": "A2a" },
+                        "ClickGacha2": { "expected": "A2a" }
+                    }
+                },
+                {
+                    "name": "A2b",
+                    "label": "$pack.a2b.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "嗨放異彩" },
+                        "ClickGacha": { "expected": "A2b" },
+                        "ClickGacha2": { "expected": "A2b" }
+                    }
+                },
+                {
+                    "name": "A3",
+                    "label": "$pack.a3.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "雙天之守護者" },
+                        "ClickGacha": { "expected": "A3" },
+                        "ClickGacha2": { "expected": "A3" }
+                    }
+                },
+                {
+                    "name": "A3a",
+                    "label": "$pack.a3a.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "異次元危機" },
+                        "ClickGacha": { "expected": "A3a" },
+                        "ClickGacha2": { "expected": "A3a" }
+                    }
+                },
+                {
+                    "name": "A3b",
+                    "label": "$pack.a3b.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "伊布花園" },
+                        "ClickGacha": { "expected": "A3b" },
+                        "ClickGacha2": { "expected": "A3b" }
+                    }
+                },
+                {
+                    "name": "A4",
+                    "label": "$pack.a4.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "天與海的指引" },
+                        "ClickGacha": { "expected": "A4" },
+                        "ClickGacha2": { "expected": "A4" }
+                    }
+                },
+                {
+                    "name": "A4a",
+                    "label": "$pack.a4a.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "未知水域" },
+                        "ClickGacha": { "expected": "A4a" },
+                        "ClickGacha2": { "expected": "A4a" }
+                    }
+                },
+                {
+                    "name": "A4b",
+                    "label": "$pack.a4b.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesA"] },
+                        "SelectionGacha": { "expected": "高級擴充包ex" },
+                        "ClickGacha": { "expected": "A4b" },
+                        "ClickGacha2": { "expected": "A4b" }
+                    }
+                },
+                {
+                    "name": "B1",
+                    "label": "$pack.b1.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesB"] },
+                        "SelectionGacha": { "expected": "超級崛起" },
+                        "ClickGacha": { "expected": "B1" },
+                        "ClickGacha2": { "expected": "B1" }
+                    }
+                },
+                {
+                    "name": "B1a",
+                    "label": "$pack.b1a.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesB"] },
+                        "SelectionGacha": { "expected": "紅蓮烈焰" },
+                        "ClickGacha": { "expected": "B1a" },
+                        "ClickGacha2": { "expected": "B1a" }
+                    }
+                },
+                {
+                    "name": "B2",
+                    "label": "$pack.b2.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesB"] },
+                        "SelectionGacha": { "expected": "幻夢遊行" },
+                        "ClickGacha": { "expected": "B2" },
+                        "ClickGacha2": { "expected": "B2" }
+                    }
+                },
+                {
+                    "name": "B2a",
+                    "label": "$pack.b2a.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesB"] },
+                        "SelectionGacha": { "expected": "帕底亞驚奇" },
+                        "ClickGacha": { "expected": "B2a" },
+                        "ClickGacha2": { "expected": "B2a" }
+                    }
+                },
+                {
+                    "name": "B2b",
+                    "label": "$pack.b2b.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesB"] },
+                        "SelectionGacha": { "expected": "超級異彩" },
+                        "ClickGacha": { "expected": "B2b" },
+                        "ClickGacha2": { "expected": "B2b" }
+                    }
+                },
+                {
+                    "name": "B3",
+                    "label": "$pack.b3.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesB"] },
+                        "SelectionGacha": { "expected": "波導奏動" },
+                        "ClickGacha": { "expected": "B3" },
+                        "ClickGacha2": { "expected": "B3" }
+                    }
+                },
+                {
+                    "name": "B3a",
+                    "label": "$pack.b3a.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesB"] },
+                        "SelectionGacha": { "expected": "進擊悖謬" },
+                        "ClickGacha": { "expected": "B3a" },
+                        "ClickGacha2": { "expected": "B3a" }
+                    }
+                },
+                {
+                    "name": "B3b",
+                    "label": "$pack.b3b.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesB"] },
+                        "SelectionGacha": { "expected": "奇跡日常" },
+                        "ClickGacha": { "expected": "B3b" },
+                        "ClickGacha2": { "expected": "B3b" }
+                    }
+                }
+            ]
+        }
+    },
     "task": [
         {
             "name": "daily_routine",
@@ -51,7 +251,10 @@
             "entry": "DailyRoutine",
             "default_check": true,
             "description": "$task.daily_routine.description",
-            "doc": "resource/base/docs/tasks/daily_routine.md"
+            "doc": "resource/base/docs/tasks/daily_routine.md",
+            "option": [
+                "gacha_pack"
+            ]
         },
         {
             "name": "startup",
@@ -69,7 +272,10 @@
             "label": "$task.gacha.label",
             "entry": "Gacha",
             "description": "$task.gacha.description",
-            "doc": "resource/base/docs/tasks/gacha.md"
+            "doc": "resource/base/docs/tasks/gacha.md",
+            "option": [
+                "gacha_pack"
+            ]
         },
         {
             "name": "wonder_pick",

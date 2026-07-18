@@ -49,7 +49,8 @@
         },
         "post_delay": 1000,
         "next": [
-            "SelectionGacha"
+            "SelectionGacha",
+            "ScrollGachaList"
         ]
     },
     "SelectionSeriesA": {
@@ -68,30 +69,43 @@
         },
         "post_delay": 1000,
         "next": [
-            "SelectionGacha"
+            "SelectionGacha",
+            "ScrollGachaList"
         ]
     },
     "SelectionGacha": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [
-                    40,
-                    580,
-                    648,
-                    328
-                ],
-                "template": "CardBag/SuperCharizard.png"
-                //默认选择当前的超级喷火龙，todo：后续可增加选择功能
-            }
-        },
-        "threshold": 0.8,
+        "recognition": "OCR",
+        "expected": "奇跡日常",
+        "roi": [
+            20,
+            360,
+            680,
+            700
+        ],
+        "threshold": 0.7,
         "action": {
             "type": "Click"
         },
         "post_delay": 2000,
         "next": [
             "ClickGacha"
+        ]
+    },
+    "ScrollGachaList": {
+        "action": "Swipe",
+        "begin": [
+            360,
+            980
+        ],
+        "end": [
+            360,
+            480
+        ],
+        "duration": 600,
+        "post_delay": 500,
+        "next": [
+            "SelectionGacha",
+            "ScrollGachaList"
         ]
     },
     "ClickGacha": {
@@ -104,7 +118,7 @@
             144,
             119
         ],
-        "expected": "B1a",
+        "expected": "B3b",
         "threshold": 0.8,
         "next": [
             "ClickOpen"
@@ -136,7 +150,7 @@
             89,
             59
         ],
-        "expected": "B1a",
+        "expected": "B3b",
         "threshold": 0.8,
         "next": [
             "SwipeGacha"
