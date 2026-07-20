@@ -1,0 +1,434 @@
+{
+    "WonderPick": {
+        "next": [
+            "[JumpBack]WonderPickStartUp",
+            "WonderPickOpenEntry"
+        ]
+    },
+    "WonderPickStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
+        ]
+    },
+    "WonderPickOpenEntry": {
+        "recognition": "OCR",
+        "roi": [
+            90,
+            900,
+            250,
+            130
+        ],
+        "expected": "得卡挑[戰战]",
+        "threshold": 0.65,
+        "action": "Click",
+        "target": [
+            190,
+            970
+        ],
+        "post_delay": 7000,
+        "next": [
+            "WonderPickListReady"
+        ]
+    },
+    "WonderPickListReady": {
+        "recognition": "OCR",
+        "roi": [
+            210,
+            35,
+            300,
+            110
+        ],
+        "expected": "得卡挑[戰战]",
+        "threshold": 0.65,
+        "action": "DoNothing",
+        "next": [
+            "WonderPickStrategyEntry"
+        ]
+    },
+    "WonderPickStrategyEntry": {
+        // The frontend overrides this route for each strategy.
+        "recognition": "DirectHit",
+        "action": "DoNothing",
+        "next": [
+            "WonderPickScanHighRarity"
+        ]
+    },
+    "WonderPickScanHighRarity": {
+        // A displayed cost of 3 or 4 is used as the stable proxy for a group
+        // containing a one-star-or-higher card. The final card is still random.
+        "recognition": "OCR",
+        "roi": [
+            365,
+            920,
+            55,
+            75
+        ],
+        "expected": "^[34]$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            360,
+            600
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickConfirmSafe"
+        ],
+        "on_error": [
+            "WonderPickScanHighRarityLower"
+        ]
+    },
+    "WonderPickScanHighRarityLower": {
+        "recognition": "OCR",
+        "roi": [
+            365,
+            1020,
+            55,
+            75
+        ],
+        "expected": "^[34]$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            360,
+            600
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickConfirmSafe"
+        ],
+        "on_error": [
+            "WonderPickScroll",
+            "WonderPickNoTarget"
+        ]
+    },
+    "WonderPickScanLowRarity": {
+        // Cost-1 groups contain only low-rarity cards and are the cheapest way
+        // to pursue diamond-one / diamond-two cards.
+        "recognition": "OCR",
+        "roi": [
+            365,
+            920,
+            55,
+            75
+        ],
+        "expected": "^1$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            360,
+            600
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickConfirmSafe"
+        ],
+        "on_error": [
+            "WonderPickScanLowRarityLower"
+        ]
+    },
+    "WonderPickScanLowRarityLower": {
+        "recognition": "OCR",
+        "roi": [
+            365,
+            1020,
+            55,
+            75
+        ],
+        "expected": "^1$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            360,
+            600
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickConfirmSafe"
+        ],
+        "on_error": [
+            "WonderPickScroll",
+            "WonderPickNoTarget"
+        ]
+    },
+    "WonderPickScanSpecifiedCards": {
+        // The expected regex is replaced by the frontend input. Separate card
+        // names with |, for example: 仙子伊布|呆呆獸.
+        "recognition": "OCR",
+        "roi": [
+            30,
+            360,
+            660,
+            520
+        ],
+        "expected": "仙子伊布|呆呆獸",
+        "threshold": 0.55,
+        "order_by": "Expected",
+        "action": "Click",
+        "target": [
+            360,
+            600
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickConfirmSafe"
+        ],
+        "on_error": [
+            "WonderPickScroll",
+            "WonderPickNoTarget"
+        ]
+    },
+    "WonderPickScroll": {
+        "recognition": "DirectHit",
+        "max_hit": 6,
+        "action": "Swipe",
+        "begin": [
+            360,
+            1080
+        ],
+        "end": [
+            360,
+            320
+        ],
+        "duration": 650,
+        "post_delay": 1200,
+        "next": [
+            "WonderPickScanHighRarity"
+        ]
+    },
+    "WonderPickNoTarget": {
+        "action": "StopTask",
+        "focus": "WonderPickNoTarget",
+        "attach": {
+            "reason": "No Wonder Pick group matched the configured strategy after six scrolls."
+        }
+    },
+    "WonderPickConfirmSafe": {
+        // Only press OK when the dialog says at least one normal attempt is
+        // available. This prevents entering hourglass or Poke Gold dialogs.
+        "recognition": "OCR",
+        "roi": [
+            405,
+            925,
+            75,
+            80
+        ],
+        "expected": "^[1-9]$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            520,
+            1090
+        ],
+        "post_delay": 9000,
+        "next": [
+            "WonderPickChooseCard"
+        ],
+        "on_error": [
+            "WonderPickInsufficientStamina"
+        ]
+    },
+    "WonderPickInsufficientStamina": {
+        "action": "StopTask",
+        "focus": "WonderPickInsufficientStamina",
+        "attach": {
+            "reason": "No normal Wonder Pick attempt is available; hourglasses and Poke Gold are not allowed."
+        }
+    },
+    "WonderPickChooseCard": {
+        "recognition": "OCR",
+        "roi": [
+            100,
+            100,
+            520,
+            170
+        ],
+        "expected": "選1張喜歡的卡牌吧|选1张喜欢的卡牌吧",
+        "threshold": 0.6,
+        "timeout": 30000,
+        // Positions are not predictable. Use the top-center position so every
+        // run is deterministic and easy to reproduce.
+        "action": "Click",
+        "target": [
+            360,
+            480
+        ],
+        "post_delay": 11000,
+        "next": [
+            "WonderPickAfterResult"
+        ]
+    },
+    "WonderPickAfterResult": {
+        "recognition": "OCR",
+        "roi": [
+            0,
+            50,
+            250,
+            220
+        ],
+        "expected": "GET",
+        "threshold": 0.55,
+        "timeout": 30000,
+        "action": "DoNothing",
+        "next": [
+            "WonderPickSaveResult"
+        ]
+    },
+    "WonderPickSaveResult": {
+        // Command receives a fresh Maa screenshot as {IMAGE}; the helper copies
+        // it before Maa removes the temporary file.
+        "recognition": "DirectHit",
+        "action": "Command",
+        "exec": "helpers/wonder_pick_recorder.exe",
+        "args": [
+            "{IMAGE}",
+            "{RESOURCE_DIR}/../.."
+        ],
+        "post_delay": 500,
+        "next": [
+            "WonderPickContinue"
+        ],
+        "on_error": [
+            "WonderPickRecordFailed"
+        ]
+    },
+    "WonderPickRecordFailed": {
+        "action": "StopTask",
+        "focus": "WonderPickRecordFailed",
+        "attach": {
+            "reason": "The obtained card was shown, but its screenshot could not be saved."
+        }
+    },
+    "WonderPickContinue": {
+        "recognition": "OCR",
+        "roi": [
+            170,
+            1130,
+            380,
+            130
+        ],
+        "expected": "點擊來繼續|点击来继续",
+        "threshold": 0.5,
+        "action": "Click",
+        "target": [
+            360,
+            1210
+        ],
+        "post_delay": 5000,
+        "next": [
+            "WonderPickTutorialSwipe",
+            "WonderPickDexContinue",
+            "WonderPickSummary",
+            "WonderPickListAfterDone",
+            "WonderPickDone"
+        ]
+    },
+    "WonderPickTutorialSwipe": {
+        "recognition": "OCR",
+        "roi": [
+            80,
+            100,
+            560,
+            180
+        ],
+        "expected": "向上輕滑卡牌|向上轻滑卡牌",
+        "threshold": 0.6,
+        "action": "Click",
+        "target": [
+            650,
+            1210
+        ],
+        "post_delay": 6000,
+        "next": [
+            "WonderPickDexContinue",
+            "WonderPickSummary"
+        ]
+    },
+    "WonderPickDexContinue": {
+        "recognition": "OCR",
+        "roi": [
+            210,
+            1080,
+            300,
+            150
+        ],
+        "expected": "繼續|继续",
+        "threshold": 0.65,
+        "action": "Click",
+        "post_delay": 5000,
+        "next": [
+            "WonderPickSummary"
+        ]
+    },
+    "WonderPickSummary": {
+        "recognition": "OCR",
+        "roi": [
+            180,
+            100,
+            360,
+            160
+        ],
+        "expected": "挑[戰战]結果|挑战结果",
+        "threshold": 0.6,
+        "action": "Click",
+        "target": [
+            360,
+            1210
+        ],
+        "post_delay": 5000,
+        "next": [
+            "WonderPickCloseThanks",
+            "WonderPickListAfterDone",
+            "WonderPickDone"
+        ]
+    },
+    "WonderPickCloseThanks": {
+        // Close the optional social prompt. The task never sends a message or
+        // friend invitation on the player's behalf.
+        "recognition": "OCR",
+        "roi": [
+            150,
+            760,
+            420,
+            200
+        ],
+        "expected": "要送出.*謝謝|要送出.*谢谢",
+        "threshold": 0.55,
+        "action": "Click",
+        "target": [
+            360,
+            1210
+        ],
+        "post_delay": 4000,
+        "next": [
+            "WonderPickListAfterDone",
+            "WonderPickDone"
+        ]
+    },
+    "WonderPickListAfterDone": {
+        "recognition": "OCR",
+        "roi": [
+            210,
+            35,
+            300,
+            110
+        ],
+        "expected": "得卡挑[戰战]",
+        "threshold": 0.65,
+        "action": "DoNothing",
+        "next": [
+            "WonderPickDone"
+        ]
+    },
+    "WonderPickDone": {
+        "action": "DoNothing",
+        "next": []
+    }
+}

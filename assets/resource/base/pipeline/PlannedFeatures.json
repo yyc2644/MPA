@@ -41,7 +41,7 @@
         "max_hit": 1,
         "action": "DoNothing",
         "next": [
-            "WonderPickPlaceholder"
+            "WonderPick"
         ]
     },
     "DailyStepShopFree": {
@@ -79,24 +79,6 @@
         ]
     },
     "ClaimGiftsPlaceholder": {
-        "action": "DoNothing",
-        "next": []
-    },
-    "WonderPick": {
-        "enabled": false,
-        "next": [
-            "[JumpBack]WonderPickStartUp",
-            "WonderPickPlaceholder"
-        ]
-    },
-    "WonderPickStartUp": {
-        "max_hit": 1,
-        "action": "DoNothing",
-        "next": [
-            "StartUp"
-        ]
-    },
-    "WonderPickPlaceholder": {
         "action": "DoNothing",
         "next": []
     },
