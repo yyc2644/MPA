@@ -37,14 +37,85 @@
             ]
         }
     ],
-    "agent": {
-        "child_exec": "python",
-        "child_args": [
-            "agent/main.py",
-            "{identifier}"
-        ]
-    },
     "option": {
+        "wonder_pick_strategy": {
+            "type": "select",
+            "label": "$option.wonder_pick_strategy.label",
+            "description": "$option.wonder_pick_strategy.description",
+            "default_case": "high_rarity",
+            "cases": [
+                {
+                    "name": "high_rarity",
+                    "label": "$option.wonder_pick_strategy.high_rarity",
+                    "description": "$option.wonder_pick_strategy.high_rarity.description",
+                    "pipeline_override": {
+                        "WonderPickStrategyEntry": { "next": ["WonderPickScanHighRarity"] },
+                        "WonderPickScroll": { "next": ["WonderPickScanHighRarity"] }
+                    }
+                },
+                {
+                    "name": "low_rarity",
+                    "label": "$option.wonder_pick_strategy.low_rarity",
+                    "description": "$option.wonder_pick_strategy.low_rarity.description",
+                    "pipeline_override": {
+                        "WonderPickStrategyEntry": { "next": ["WonderPickScanLowRarity"] },
+                        "WonderPickScroll": { "next": ["WonderPickScanLowRarity"] }
+                    }
+                },
+                {
+                    "name": "specified_cards",
+                    "label": "$option.wonder_pick_strategy.specified_cards",
+                    "description": "$option.wonder_pick_strategy.specified_cards.description",
+                    "option": [
+                        "wonder_pick_targets"
+                    ],
+                    "pipeline_override": {
+                        "WonderPickStrategyEntry": { "next": ["WonderPickScanSpecifiedCards"] },
+                        "WonderPickScroll": { "next": ["WonderPickScanSpecifiedCards"] }
+                    }
+                }
+            ]
+        },
+        "wonder_pick_targets": {
+            "type": "input",
+            "label": "$option.wonder_pick_targets.label",
+            "description": "$option.wonder_pick_targets.description",
+            "inputs": [
+                {
+                    "name": "target_cards",
+                    "label": "$option.wonder_pick_targets.input.label",
+                    "description": "$option.wonder_pick_targets.input.description",
+                    "default": "仙子伊布|呆呆獸",
+                    "pipeline_type": "string",
+                    "verify": "^[^{}\\r\\n]{1,80}$",
+                    "pattern_msg": "$option.wonder_pick_targets.input.error"
+                }
+            ],
+            "pipeline_override": {
+                "WonderPickScanSpecifiedCards": {
+                    "expected": "{target_cards}"
+                }
+            }
+        },
+        "wonder_pick_save_result": {
+            "type": "switch",
+            "label": "$option.wonder_pick_save_result.label",
+            "description": "$option.wonder_pick_save_result.description",
+            "default_case": "Yes",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "label": "$option.common.yes"
+                },
+                {
+                    "name": "No",
+                    "label": "$option.common.no",
+                    "pipeline_override": {
+                        "WonderPickAfterResult": { "next": ["WonderPickContinue"] }
+                    }
+                }
+            ]
+        },
         "gacha_pack": {
             "type": "select",
             "label": "$option.gacha_pack.label",
@@ -246,26 +317,10 @@
     },
     "task": [
         {
-            "name": "daily_routine",
-            "label": "$task.daily_routine.label",
-            "entry": "DailyRoutine",
-            "default_check": true,
-            "description": "$task.daily_routine.description",
-            "doc": "resource/base/docs/tasks/daily_routine.md",
-            "option": [
-                "gacha_pack"
-            ]
-        },
-        {
             "name": "startup",
             "label": "$task.startup.label",
             "entry": "StartUp",
             "description": "$task.startup.description"
-        },
-        {
-            "name": "stop",
-            "label": "$task.stop.label",
-            "entry": "StopPTCG"
         },
         {
             "name": "gacha",
@@ -282,56 +337,16 @@
             "label": "$task.wonder_pick.label",
             "entry": "WonderPick",
             "description": "$task.wonder_pick.description",
-            "doc": "resource/base/docs/tasks/daily_routine.md"
+            "doc": "resource/base/docs/tasks/wonder_pick.md",
+            "option": [
+                "wonder_pick_strategy",
+                "wonder_pick_save_result"
+            ]
         },
         {
-            "name": "claim_gifts",
-            "label": "$task.claim_gifts.label",
-            "entry": "ClaimGifts",
-            "description": "$task.claim_gifts.description",
-            "doc": "resource/base/docs/tasks/daily_routine.md"
-        },
-        {
-            "name": "shop_free",
-            "label": "$task.shop_free.label",
-            "entry": "ShopFree",
-            "description": "$task.shop_free.description",
-            "doc": "resource/base/docs/tasks/daily_routine.md"
-        },
-        {
-            "name": "claim_missions",
-            "label": "$task.claim_missions.label",
-            "entry": "ClaimMissions",
-            "description": "$task.claim_missions.description",
-            "doc": "resource/base/docs/tasks/daily_routine.md"
-        },
-        {
-            "name": "solo_battle",
-            "label": "$task.solo_battle.label",
-            "entry": "SoloBattle",
-            "description": "$task.solo_battle.description",
-            "doc": "resource/base/docs/tasks/battle.md"
-        },
-        {
-            "name": "versus_battle",
-            "label": "$task.versus_battle.label",
-            "entry": "VersusBattle",
-            "description": "$task.versus_battle.description",
-            "doc": "resource/base/docs/tasks/battle.md"
-        },
-        {
-            "name": "share_card",
-            "label": "$task.share_card.label",
-            "entry": "ShareCard",
-            "description": "$task.share_card.description",
-            "doc": "resource/base/docs/tasks/social.md"
-        },
-        {
-            "name": "trade_card",
-            "label": "$task.trade_card.label",
-            "entry": "TradeCard",
-            "description": "$task.trade_card.description",
-            "doc": "resource/base/docs/tasks/social.md"
+            "name": "stop",
+            "label": "$task.stop.label",
+            "entry": "StopPTCG"
         }
     ]
 }

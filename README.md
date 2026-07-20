@@ -23,7 +23,8 @@ MPA 目前处于早期开发阶段。仓库已经补齐 MaaFramework 项目结�
 
 请特别注意：
 
-- 已通过本地校验：`assets/interface.json` schema、`assets/resource/base` 资源加载、前端文档路径引用。
+- **前端开放范围**：当前任务页展示 `StartUp`、`Gacha`、`WonderPick` 和 `StopPTCG`。其余功能均标记为开发中，并从 `interface.json` 的任务列表隐藏，无法被玩家勾选或执行。
+- 已接入自动校验：`assets/interface.json` schema、`assets/resource/base` 资源加载、前端文档路径引用。
 - 未完成整包自测：MFAAvalonia release 包尚未在真实机器上完整启动验证。
 - 未完成真机/模拟器回放：除已有启动/抽卡草稿外，多数任务缺少真实截图、ROI 和模板资源。
 - 不保存、输入或管理账号密码、验证码；项目只面向用户已经手动登录完成的模拟器。
@@ -31,16 +32,19 @@ MPA 目前处于早期开发阶段。仓库已经补齐 MaaFramework 项目结�
 
 ## 功能状态
 
+> Maa Project Interface v2 没有任务禁用字段。为避免误操作，未完成的功能不会以“看似可用”的任务出现在前端；Pipeline 骨架仍保留在仓库中，完成截图适配、异常分支和模拟器回放后再逐项开放。
+> 同时，开发中入口节点统一设置为 `enabled: false`，用于拦截旧版前端配置或手工调用。
+
 | 功能 | 入口 | 当前状态 | 自测状态 | 说明 |
 | --- | --- | --- | --- | --- |
-| MFAAvalonia 前端 | `assets/interface.json` | 已接入 | 已做 schema/路径校验，未做完整打包启动自测 | 已配置多语言、欢迎页、关于页、任务文档和资源包 |
+| MFAAvalonia 前端 | `assets/interface.json` | 已接入 | 已完成本地 Windows Release 组装检查 | 当前展示启动、免费抽卡、得卡挑战和关闭；其余开发中入口隐藏 |
 | 启动并回到主页 | `StartUp` | 基础 pipeline 已存在 | 未做最新模拟器回放 | 支持启动游戏、标题页点击、关闭通知、回主页；异常弹窗仍需增强 |
 | 关闭游戏 | `StopPTCG` | 基础 pipeline 已存在 | 未做最新模拟器回放 | 使用 `StopApp` 关闭包名 `jp.pokemon.pokemontcgp` |
-| 自动抽卡 | `Gacha` | 已接入 19 个扩充包的前端选择配置 | 已完成一次 B3b 模拟器回放；完整自动闭环仍待修复 | 默认 B3b，可切换 A/B 系列并按名称查找目标卡包；开封手势、结果页和异常处理仍需完善 |
+| 自动抽卡 | `Gacha` | 可用，已开放 19 个扩充包选择 | 已在繁体中文 720×1280 模拟器打开 B3b 免费卡包 | 仅在卡包能量为 MAX 时继续；撕包失败会重试两次，且不会使用沙漏 |
 | 新手/对战入口 | `BeginnerGuide` | 草稿 pipeline 已存在 | 未做最新模拟器回放 | 已修正入口不再误跳抽卡；后续仍需完整流程设计 |
-| 每日流程 | `DailyRoutine` | 已接任务入口和骨架 | 未自测 | 串联启动、礼物、抽卡、得卡挑战、商店、任务奖励；子流程多数还是占位 |
+| 每日流程 | `DailyRoutine` | 已修复顺序编排，前端隐藏 | 已做资源静态校验，未做模拟器回放 | 使用 `[JumpBack]` 和 `max_hit` 串行执行；完成子流程闭环后再恢复任务和选项入口 |
 | 领取礼物 | `ClaimGifts` | 骨架 | 未自测 | 缺截图、ROI、按钮模板和过期礼物处理 |
-| 得卡挑战 | `WonderPick` | 骨架 | 未自测 | 缺目标选择策略、资源消耗保护和截图模板 |
+| 得卡挑战 | `WonderPick` | 可用，提供三种策略 | 已在繁体中文 720×1280 画面完整挑战一次 | 支持高稀有度、低稀有度和指定卡牌；禁止沙漏/金币，并保存获得卡牌截图 |
 | 商店免费项 | `ShopFree` | 骨架 | 未自测 | 缺每日免费项、活动页签、通行证页签识别 |
 | 领取任务奖励 | `ClaimMissions` | 骨架 | 未自测 | 缺每日/活动/高级任务页签识别 |
 | 机器人对战 | `SoloBattle` | 骨架 | 未自测 | 计划先做进入、选卡组、结果确认、快速投降 |
@@ -58,7 +62,7 @@ MPA 目前处于早期开发阶段。仓库已经补齐 MaaFramework 项目结�
 - 抽卡相关：`CardBag/index_icon.png`、`CardBag/SuperCharizard.png`、`CardBag/skip.png` 等
 - 对战入口草稿：`BeginnerGuide/fight.png`
 
-仍缺少大量截图和模板资源，包括但不限于礼物箱、任务页、商店页签、得卡挑战、Solo Battle、Versus、Social Hub、Share、Trade、异常弹窗、网络错误和活动页面。
+仍缺少大量截图和模板资源，包括但不限于礼物箱、任务页、商店页签、Solo Battle、Versus、Social Hub、Share、Trade、异常弹窗、网络错误和活动页面。
 
 ## 使用方式
 
@@ -71,7 +75,9 @@ MPA 目前处于早期开发阶段。仓库已经补齐 MaaFramework 项目结�
 
 ### 2. 使用 MFAAvalonia 前端
 
-本项目通过 `assets/interface.json` 接入 MFAAvalonia。GitHub Actions 的 `install.yml` 会下载 MaaFramework 和 MFAAvalonia，并生成带前端的 `MPA-{os}-{arch}` 产物。
+本项目通过 `assets/interface.json` 接入 MFAAvalonia。GitHub Actions 的 `install.yml` 会下载 MaaFramework 和 MFAAvalonia，并生成带前端的 `MPA-{os}-{arch}` 产物。当前向玩家开放 `StartUp`、`Gacha`、`WonderPick` 和 `StopPTCG`；每日流程开关会等其他子功能闭环后再恢复到前端。
+
+当前任务未使用 Python 自定义识别/动作，因此发布包不启动 Python Agent。得卡结果截图由 CI 针对目标平台编译的原生小程序保存，不依赖玩家额外安装 Python。
 
 更多说明见 [MFAAvalonia 集成说明](docs/zh_cn/MFAAvalonia集成.md)。
 
@@ -126,23 +132,12 @@ python -m pip install -r tools/requirements.txt
 python -m pip install maafw --pre jsonschema
 ```
 
+构建发布包还需要 Go 1.22 或更新版本，用于编译无外部依赖的得卡结果截图助手。
+
 校验前端接口：
 
 ```bash
-python - <<'PY'
-import json
-from pathlib import Path
-import jsonschema
-
-schema = json.loads(Path("deps/tools/interface.schema.json").read_text())
-data = json.loads(Path("assets/interface.json").read_text())
-errors = sorted(jsonschema.Draft7Validator(schema).iter_errors(data), key=lambda e: list(e.path))
-if errors:
-    for error in errors:
-        print("/".join(map(str, error.path)) or "<root>", error.message)
-    raise SystemExit(1)
-print("interface ok")
-PY
+python tools/check_interface.py
 ```
 
 校验 Maa 资源：
@@ -166,7 +161,7 @@ python tools/multi_instance_runner.py --help
 
 1. 补真实截图样本和 ROI 标注。
 2. 完成启动、礼物箱、免费卡包、任务奖励这条每日收益闭环。
-3. 接入得卡挑战和商店免费项。
+3. 扩展得卡挑战的“未拥有/不足两张”判断，并接入商店免费项。
 4. 做 Solo Battle 的入口、奖励确认和快速投降。
 5. 最后再谨慎推进 Share、Trade 和 Versus。
 

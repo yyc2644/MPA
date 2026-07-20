@@ -10,6 +10,7 @@ on:
       - ".github/workflows/install.yml"
       - "assets/**"
       - "**.py"
+      - "**.go"
   pull_request:
     branches:
       - "**"
@@ -17,6 +18,7 @@ on:
       - ".github/workflows/install.yml"
       - "assets/**"
       - "**.py"
+      - "**.go"
   workflow_dispatch:
 
 jobs:
@@ -73,6 +75,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
+
+      - name: Set up Go for native helpers
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22.x"
 
       - name: Download MaaFramework
         uses: robinraju/release-downloader@v1

@@ -14,8 +14,25 @@ GitHub Actions 的 `install.yml` 会：
 1. 下载 MaaFramework 运行时到 `deps`。
 2. 下载 MFAAvalonia。
 3. 把 MFAAvalonia 文件复制到 `install`。
-4. 运行 `tools/install.py`，复制资源、`interface.json`、README、LICENSE 和 agent。
+4. 运行 `tools/install.py`，复制资源、`interface.json`、README 和 LICENSE。
 5. 上传 `MPA-{os}-{arch}` 构建产物。
+
+当前 Pipeline 没有调用自定义识别或自定义动作，因此发布包暂不声明和打包 Python Agent。这样 MFAAvalonia 成品不依赖用户机器上的系统 Python。后续真正引入 Agent 业务逻辑时，应像 MaaGumballs 成品一样打包项目内嵌 Python，并将 `agent.child_exec` 指向 `{PROJECT_DIR}/python/python.exe`，不能只写裸的 `python`。
+
+## 前端任务开放策略
+
+Maa Project Interface v2 的 `task` 没有 `disabled` 字段，并且 Schema 不允许额外属性。为了避免玩家误选，占位或尚未完成回放验证的功能不写入 `assets/interface.json` 的 `task` 列表：
+
+- 当前开放 `StartUp`、`Gacha` 和 `StopPTCG`；`Gacha` 只在识别到免费卡包能量为 `MAX` 时继续。
+- `DailyRoutine`、礼物、得卡挑战、商店、任务奖励、对战和社交入口均保留 Pipeline 骨架，但不在前端展示。
+- 开发中入口节点统一设置为 `enabled: false`，防止旧版用户配置或手工调用绕过前端隐藏策略。
+- 完成功能、异常分支和模拟器回放验证后，再把对应任务及其 `option.pipeline_override` 配置恢复到前端。
+
+每日步骤骨架仍使用 `[JumpBack]` 和 `max_hit: 1` 串行执行。`next` 本身是候选节点列表，不应直接当成顺序任务列表使用。
+
+## 配置和用户数据
+
+MFAAvalonia 首次运行后会生成 `appsettings.json` 和 `config` 下的实例配置。这些是用户状态，不应从其他项目的成品包复制到 MPA，也不应提交进资源包。
 
 ## 本地调试
 
@@ -26,5 +43,12 @@ GitHub Actions 的 `install.yml` 会：
 3. 把 MFAAvalonia 内容复制到 `install`。
 4. 执行 `python tools/install.py v0.0.1 macos aarch64`。
 5. 从 `install` 目录启动 MFAAvalonia。
+
+打包前可以分别校验前端接口和 Maa 资源：
+
+```bash
+python tools/check_interface.py
+python check_resource.py assets/resource/base
+```
 
 `assets/interface.json` 中的文档和语言文件路径都是相对于最终 `install/interface.json` 的路径，因此这些文件放在 `assets/resource/base` 下，打包时会一起复制到 `install/resource/base`。

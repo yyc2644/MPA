@@ -1,6 +1,8 @@
 from pathlib import Path
 
+import os
 import shutil
+import subprocess
 import sys
 
 try:
@@ -120,11 +122,39 @@ def install_chores():
     )
 
 
-def install_agent():
-    shutil.copytree(
-        working_dir / "agent",
-        install_path / "agent",
-        dirs_exist_ok=True,
+def install_wonder_pick_recorder():
+    """Build the tiny, dependency-free result screenshot recorder."""
+    if os_name == "android":
+        return
+
+    go_os = {
+        "win": "windows",
+        "macos": "darwin",
+        "linux": "linux",
+    }[os_name]
+    go_arch = {
+        "x86_64": "amd64",
+        "aarch64": "arm64",
+    }[arch]
+
+    go = shutil.which("go")
+    if go is None:
+        raise RuntimeError("Go 1.22 or newer is required to build the Wonder Pick result recorder.")
+
+    source = working_dir / "tools" / "wonder_pick_recorder"
+    output_dir = install_path / "helpers"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    # Keep one filename on every desktop platform. Unix treats the .exe suffix
+    # as an ordinary name, while Windows requires it for reliable launching.
+    output = output_dir / "wonder_pick_recorder.exe"
+
+    env = os.environ.copy()
+    env.update({"CGO_ENABLED": "0", "GOOS": go_os, "GOARCH": go_arch})
+    subprocess.run(
+        [go, "build", "-trimpath", "-ldflags=-s -w", "-o", str(output), "."],
+        cwd=source,
+        env=env,
+        check=True,
     )
 
 
@@ -132,6 +162,6 @@ if __name__ == "__main__":
     install_deps()
     install_resource()
     install_chores()
-    install_agent()
+    install_wonder_pick_recorder()
 
     print(f"Install to {install_path} successfully.")

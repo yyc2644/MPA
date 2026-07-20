@@ -1,9 +1,45 @@
 {
     "Gacha": {
         "next": [
-            "Click_index"
+            "[JumpBack]GachaStartUp",
+            "CheckFreePack"
         ],
         "post_delay": 1000
+    },
+    "GachaStartUp": {
+        "max_hit": 1,
+        "action": "DoNothing",
+        "next": [
+            "StartUp"
+        ]
+    },
+    "CheckFreePack": {
+        // Only continue when pack stamina is full. This prevents the task from
+        // entering a flow that may offer to consume pack hourglasses.
+        "recognition": "OCR",
+        "roi": [
+            280,
+            710,
+            170,
+            80
+        ],
+        "expected": "MAX",
+        "threshold": 0.65,
+        "timeout": 5000,
+        "action": "DoNothing",
+        "next": [
+            "Click_index"
+        ],
+        "on_error": [
+            "GachaNoFreePack"
+        ]
+    },
+    "GachaNoFreePack": {
+        "action": "StopTask",
+        "focus": "GachaNoFreePack",
+        "attach": {
+            "reason": "Pack stamina is not MAX; no free pack is available."
+        }
     },
     "Check_point": {
         // TODO: add a real template/ROI when pack-point claiming is implemented.
@@ -12,22 +48,16 @@
         "next": []
     },
     "Click_index": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [
-                    620,
-                    260,
-                    50,
-                    50
-                ],
-                "template": "CardBag/index_icon.png"
-            }
-        },
+        "recognition": "TemplateMatch",
+        "roi": [
+            620,
+            260,
+            50,
+            50
+        ],
+        "template": "CardBag/index_icon.png",
         "threshold": 0.8,
-        "action": {
-            "type": "Click"
-        },
+        "action": "Click",
         "post_delay": 1000,
         "next": [
             "SelectionSeriesB"
@@ -36,7 +66,6 @@
     "SelectionSeriesB": {
         "recognition": "OCR",
         "expected": "B系列",
-        "type": "TemplateMatch",
         "roi": [
             90,
             1078,
@@ -56,7 +85,6 @@
     "SelectionSeriesA": {
         "recognition": "OCR",
         "expected": "A系列",
-        "type": "TemplateMatch",
         "roi": [
             90,
             1078,
@@ -86,7 +114,8 @@
         "action": {
             "type": "Click"
         },
-        "post_delay": 2000,
+        // The 3D pack can be visible before it starts accepting touches.
+        "post_delay": 5000,
         "next": [
             "ClickGacha"
         ]
@@ -109,8 +138,13 @@
         ]
     },
     "ClickGacha": {
-        //有毒，不能点击范围内？,识别改成识别卡包类别进行点击
+        // Use the series code to verify the detail page, but click the pack
+        // body: tapping the small code label is ignored by some game frames.
         "action": "Click",
+        "target": [
+            360,
+            720
+        ],
         "recognition": "OCR",
         "roi": [
             404,
@@ -120,6 +154,7 @@
         ],
         "expected": "B3b",
         "threshold": 0.8,
+        "post_delay": 1000,
         "next": [
             "ClickOpen"
         ]
@@ -152,45 +187,151 @@
         ],
         "expected": "B3b",
         "threshold": 0.8,
+        // Wait until the sealed pack and its swipe prompt are interactive.
+        "post_delay": 4000,
         "next": [
             "SwipeGacha"
         ]
     },
     "SwipeGacha": {
-        "repeat_wait_freezes": 500,
+        // Keep the gesture away from the Android edge area. The following
+        // candidates verify success before a sealed-pack retry is allowed.
         "action": "Swipe",
-        "end": [
-            90,
-            730
-        ],
         "begin": [
-            700,
-            729
+            120,
+            742
         ],
-        "duration": 800,
-        "end_hold": 200,
+        "end": [
+            670,
+            742
+        ],
+        "duration": 300,
+        "end_hold": 50,
+        "post_delay": 1500,
+        "timeout": 12000,
+        "on_error": [
+            "GachaSwipeFailed"
+        ],
         "next": [
-            // "SkipGacha"
+            "SkipGacha",
+            "ClickContinue",
+            "ClickSkip",
+            "GachaOver",
+            "SwipeGachaRetry1"
         ]
     },
+    "SwipeGachaRetry1": {
+        // Always perform another left-to-right retry. During a failed cut,
+        // the prompt briefly disappears while the seal flashes, so checking
+        // it here would produce a false success.
+        "recognition": "DirectHit",
+        "max_hit": 1,
+        "action": "Swipe",
+        "begin": [
+            110,
+            742
+        ],
+        "end": [
+            680,
+            742
+        ],
+        "duration": 450,
+        "end_hold": 80,
+        "post_delay": 1500,
+        "timeout": 12000,
+        "on_error": [
+            "GachaSwipeFailed"
+        ],
+        "next": [
+            "SkipGacha",
+            "ClickContinue",
+            "ClickSkip",
+            "GachaOver",
+            "SwipeGachaRetry2"
+        ]
+    },
+    "SwipeGachaRetry2": {
+        "recognition": "DirectHit",
+        "max_hit": 1,
+        "action": "Swipe",
+        "begin": [
+            100,
+            750
+        ],
+        "end": [
+            690,
+            750
+        ],
+        "duration": 650,
+        "end_hold": 120,
+        // A rejected cut can keep the seal glowing for several seconds before
+        // the instruction returns. Judge the final state only after it settles.
+        "post_delay": 8000,
+        "timeout": 20000,
+        "on_error": [
+            "GachaSwipeFailed"
+        ],
+        "next": [
+            "SkipGacha",
+            "ClickContinue",
+            "ClickSkip",
+            "GachaOver",
+            "GachaSwipeStillSealed",
+            "GachaSwipeOpened"
+        ]
+    },
+    "GachaSwipeStillSealed": {
+        "recognition": "OCR",
+        "roi": [
+            200,
+            280,
+            320,
+            80
+        ],
+        "expected": "開封",
+        "threshold": 0.6,
+        "action": "DoNothing",
+        "next": [
+            "GachaSwipeFailed"
+        ]
+    },
+    "GachaSwipeOpened": {
+        // Once the instruction disappears, the pack has left the sealed state.
+        "recognition": "OCR",
+        "roi": [
+            200,
+            280,
+            320,
+            80
+        ],
+        "expected": "開封",
+        "threshold": 0.6,
+        "inverse": true,
+        "action": "DoNothing",
+        "focus": "GachaSwipeOpened",
+        "attach": {
+            "reason": "The sealed-pack swipe prompt disappeared."
+        }
+    },
+    "GachaSwipeFailed": {
+        "action": "StopTask",
+        "focus": "GachaSwipeFailed",
+        "attach": {
+            "reason": "The booster pack remained sealed after three swipe attempts."
+        }
+    },
     "SkipGacha": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [
-                    560,
-                    1140,
-                    150,
-                    150
-                ],
-                "template": "CardBag/longclick.png"
-            }
-        },
+        "recognition": "TemplateMatch",
+        "roi": [
+            560,
+            1130,
+            150,
+            150
+        ],
+        "template": "CardBag/longclick.png",
         "threshold": 0.8,
-        "action": {
-            "type": "Click"
-        },
-        "duration": 5000,
+        "action": "Click",
+        "post_delay": 5000,
         "next": [
             "ClickContinue"
         ]
@@ -199,10 +340,10 @@
         "action": "Click",
         "recognition": "OCR",
         "roi": [
-            291,
-            1100,
             200,
-            200
+            1120,
+            320,
+            150
         ],
         "expected": "續",
         "threshold": 0.8,
@@ -211,22 +352,16 @@
         ]
     },
     "ClickSkip": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [
-                    568,
-                    1130,
-                    152,
-                    149
-                ],
-                "template": "CardBag/skip.png"
-            }
-        },
+        "recognition": "TemplateMatch",
+        "roi": [
+            568,
+            1130,
+            152,
+            149
+        ],
+        "template": "CardBag/skip.png",
         "threshold": 0.8,
-        "action": {
-            "type": "Click"
-        },
+        "action": "Click",
         "next": [
             "ClickSkip",
             "ClickContinue",
