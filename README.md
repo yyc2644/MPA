@@ -23,6 +23,7 @@ MPA 目前处于早期开发阶段。仓库已经补齐 MaaFramework 项目结�
 
 请特别注意：
 
+- **前端开放范围**：当前任务页展示 `StartUp`、`Gacha` 和 `StopPTCG`。其余功能均标记为开发中，并从 `interface.json` 的任务列表隐藏，无法被玩家勾选或执行。
 - 已接入自动校验：`assets/interface.json` schema、`assets/resource/base` 资源加载、前端文档路径引用。
 - 未完成整包自测：MFAAvalonia release 包尚未在真实机器上完整启动验证。
 - 未完成真机/模拟器回放：除已有启动/抽卡草稿外，多数任务缺少真实截图、ROI 和模板资源。
@@ -31,14 +32,17 @@ MPA 目前处于早期开发阶段。仓库已经补齐 MaaFramework 项目结�
 
 ## 功能状态
 
+> Maa Project Interface v2 没有任务禁用字段。为避免误操作，未完成的功能不会以“看似可用”的任务出现在前端；Pipeline 骨架仍保留在仓库中，完成截图适配、异常分支和模拟器回放后再逐项开放。
+> 同时，开发中入口节点统一设置为 `enabled: false`，用于拦截旧版前端配置或手工调用。
+
 | 功能 | 入口 | 当前状态 | 自测状态 | 说明 |
 | --- | --- | --- | --- | --- |
-| MFAAvalonia 前端 | `assets/interface.json` | 已接入 | 已接入 schema/资源 CI，未做完整打包启动自测 | 已配置多语言、欢迎页、关于页、任务文档、每日步骤开关和卡包系列选择 |
+| MFAAvalonia 前端 | `assets/interface.json` | 已接入 | 已完成本地 Windows Release 组装检查 | 当前展示启动、免费抽卡和关闭；其余开发中入口隐藏 |
 | 启动并回到主页 | `StartUp` | 基础 pipeline 已存在 | 未做最新模拟器回放 | 支持启动游戏、标题页点击、关闭通知、回主页；异常弹窗仍需增强 |
 | 关闭游戏 | `StopPTCG` | 基础 pipeline 已存在 | 未做最新模拟器回放 | 使用 `StopApp` 关闭包名 `jp.pokemon.pokemontcgp` |
-| 自动抽卡 | `Gacha` | 已接入 19 个扩充包的前端选择配置 | 已完成一次 B3b 模拟器回放；完整自动闭环仍待修复 | 默认 B3b，可切换 A/B 系列并按名称查找目标卡包；开封手势、结果页和异常处理仍需完善 |
+| 自动抽卡 | `Gacha` | 可用，已开放 19 个扩充包选择 | 已在繁体中文 720×1280 模拟器打开 B3b 免费卡包 | 仅在卡包能量为 MAX 时继续；撕包失败会重试两次，且不会使用沙漏 |
 | 新手/对战入口 | `BeginnerGuide` | 草稿 pipeline 已存在 | 未做最新模拟器回放 | 已修正入口不再误跳抽卡；后续仍需完整流程设计 |
-| 每日流程 | `DailyRoutine` | 已修复顺序编排并接入前端开关 | 已做资源静态校验，未做模拟器回放 | 使用 `[JumpBack]` 和 `max_hit` 串行执行；启动默认开启，未完成的子流程默认关闭 |
+| 每日流程 | `DailyRoutine` | 已修复顺序编排，前端隐藏 | 已做资源静态校验，未做模拟器回放 | 使用 `[JumpBack]` 和 `max_hit` 串行执行；完成子流程闭环后再恢复任务和选项入口 |
 | 领取礼物 | `ClaimGifts` | 骨架 | 未自测 | 缺截图、ROI、按钮模板和过期礼物处理 |
 | 得卡挑战 | `WonderPick` | 骨架 | 未自测 | 缺目标选择策略、资源消耗保护和截图模板 |
 | 商店免费项 | `ShopFree` | 骨架 | 未自测 | 缺每日免费项、活动页签、通行证页签识别 |
@@ -71,7 +75,7 @@ MPA 目前处于早期开发阶段。仓库已经补齐 MaaFramework 项目结�
 
 ### 2. 使用 MFAAvalonia 前端
 
-本项目通过 `assets/interface.json` 接入 MFAAvalonia。GitHub Actions 的 `install.yml` 会下载 MaaFramework 和 MFAAvalonia，并生成带前端的 `MPA-{os}-{arch}` 产物。每日流程的步骤开关和开包系列选择会由 `option.pipeline_override` 映射到 Maa Pipeline。
+本项目通过 `assets/interface.json` 接入 MFAAvalonia。GitHub Actions 的 `install.yml` 会下载 MaaFramework 和 MFAAvalonia，并生成带前端的 `MPA-{os}-{arch}` 产物。当前向玩家开放 `StartUp`、`Gacha` 和 `StopPTCG`；每日流程开关和开包系列选择配置会等对应功能闭环后再恢复到前端。
 
 当前任务未使用 Python 自定义识别/动作，因此发布包暂不启动 Python Agent，不依赖用户额外安装 Python。后续加入实际 Agent 逻辑时再改为项目内嵌 Python。
 

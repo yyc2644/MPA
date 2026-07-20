@@ -7,7 +7,7 @@ import json
 import subprocess
 import sys
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
@@ -50,7 +50,7 @@ class InstanceConfig:
     address: str
     task: str
     enabled: bool = True
-    pipeline_override: Optional[Dict[str, Any]] = None
+    pipeline_override: Dict[str, Any] = field(default_factory=dict)
     screencap_methods: Optional[int] = None
     input_methods: Optional[int] = None
     config: Optional[Dict[str, Any]] = None
@@ -107,7 +107,7 @@ def normalize_instances(raw: Iterable[Dict[str, Any]], default_task: str) -> Lis
                 address=str(address),
                 task=str(item.get("task") or default_task),
                 enabled=True,
-                pipeline_override=item.get("pipeline_override"),
+                pipeline_override=item.get("pipeline_override") or {},
                 screencap_methods=item.get("screencap_methods"),
                 input_methods=item.get("input_methods"),
                 config=item.get("config"),

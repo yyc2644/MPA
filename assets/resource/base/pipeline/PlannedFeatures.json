@@ -1,5 +1,6 @@
 {
     "DailyRoutine": {
+        "enabled": false,
         // Each enabled step is executed once. JumpBack returns here after the
         // selected sub-task finishes, then max_hit skips completed steps.
         "next": [
@@ -64,6 +65,7 @@
         "next": []
     },
     "ClaimGifts": {
+        "enabled": false,
         "next": [
             "[JumpBack]ClaimGiftsStartUp",
             "ClaimGiftsPlaceholder"
@@ -81,6 +83,7 @@
         "next": []
     },
     "WonderPick": {
+        "enabled": false,
         "next": [
             "[JumpBack]WonderPickStartUp",
             "WonderPickPlaceholder"
@@ -98,6 +101,7 @@
         "next": []
     },
     "ShopFree": {
+        "enabled": false,
         "next": [
             "[JumpBack]ShopFreeStartUp",
             "ShopFreePlaceholder"
@@ -115,6 +119,7 @@
         "next": []
     },
     "ClaimMissions": {
+        "enabled": false,
         "next": [
             "[JumpBack]ClaimMissionsStartUp",
             "ClaimMissionsPlaceholder"
@@ -132,6 +137,7 @@
         "next": []
     },
     "SoloBattle": {
+        "enabled": false,
         "next": [
             "[JumpBack]SoloBattleStartUp",
             "SoloBattlePlaceholder"
@@ -149,6 +155,7 @@
         "next": []
     },
     "VersusBattle": {
+        "enabled": false,
         "next": [
             "[JumpBack]VersusBattleStartUp",
             "VersusBattlePlaceholder"
@@ -166,6 +173,7 @@
         "next": []
     },
     "ShareCard": {
+        "enabled": false,
         "next": [
             "[JumpBack]ShareCardStartUp",
             "ShareCardPlaceholder"
@@ -183,6 +191,7 @@
         "next": []
     },
     "TradeCard": {
+        "enabled": false,
         "next": [
             "[JumpBack]TradeCardStartUp",
             "TradeCardPlaceholder"

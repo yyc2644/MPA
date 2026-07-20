@@ -19,15 +19,16 @@ GitHub Actions 的 `install.yml` 会：
 
 当前 Pipeline 没有调用自定义识别或自定义动作，因此发布包暂不声明和打包 Python Agent。这样 MFAAvalonia 成品不依赖用户机器上的系统 Python。后续真正引入 Agent 业务逻辑时，应像 MaaGumballs 成品一样打包项目内嵌 Python，并将 `agent.child_exec` 指向 `{PROJECT_DIR}/python/python.exe`，不能只写裸的 `python`。
 
-## 前端任务配置
+## 前端任务开放策略
 
-`assets/interface.json` 的 `option` 会直接生成 MFAAvalonia 的任务配置控件，并通过 `pipeline_override` 修改本次任务使用的节点：
+Maa Project Interface v2 的 `task` 没有 `disabled` 字段，并且 Schema 不允许额外属性。为了避免玩家误选，占位或尚未完成回放验证的功能不写入 `assets/interface.json` 的 `task` 列表：
 
-- 每日流程提供启动、礼物、开包、得卡挑战、商店免费项和任务奖励开关。
-- 尚未实现的子流程默认关闭，避免前端看起来可用但实际只执行占位节点。
-- 开包任务提供 A/B 系列选择，并覆盖 `Click_index.next`。
+- 当前开放 `StartUp`、`Gacha` 和 `StopPTCG`；`Gacha` 只在识别到免费卡包能量为 `MAX` 时继续。
+- `DailyRoutine`、礼物、得卡挑战、商店、任务奖励、对战和社交入口均保留 Pipeline 骨架，但不在前端展示。
+- 开发中入口节点统一设置为 `enabled: false`，防止旧版用户配置或手工调用绕过前端隐藏策略。
+- 完成功能、异常分支和模拟器回放验证后，再把对应任务及其 `option.pipeline_override` 配置恢复到前端。
 
-每日步骤使用 `[JumpBack]` 和 `max_hit: 1` 串行执行。`next` 本身是候选节点列表，不应直接当成顺序任务列表使用。
+每日步骤骨架仍使用 `[JumpBack]` 和 `max_hit: 1` 串行执行。`next` 本身是候选节点列表，不应直接当成顺序任务列表使用。
 
 ## 配置和用户数据
 

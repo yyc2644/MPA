@@ -1,5 +1,6 @@
 {
     "BeginnerGuide": {
+        "enabled": false,
         "next": [
             "Click_Fight"
         ]

@@ -11,7 +11,9 @@ def configure_ocr_model():
         print(f"File Not Found: {assets_ocr_dir}")
         exit(1)
 
-    ocr_dir = assets_dir / "resource" / "model" / "ocr"
+    # The interface and the development runner both load resource/base as the
+    # Maa resource bundle, so the OCR model must live inside that bundle.
+    ocr_dir = assets_dir / "resource" / "base" / "model" / "ocr"
     if not ocr_dir.exists():   # copy default OCR model only if dir does not exist
         shutil.copytree(
             assets_dir / "MaaCommonAssets" / "OCR" / "ppocr_v5" / "zh_cn",
