@@ -111,7 +111,8 @@
                     "name": "No",
                     "label": "$option.common.no",
                     "pipeline_override": {
-                        "WonderPickAfterResult": { "next": ["WonderPickContinue"] }
+                        "WonderPickAfterResult": { "next": ["WonderPickContinue"] },
+                        "WonderPickAfterFreeResult": { "next": ["WonderPickFreeContinue"] }
                     }
                 }
             ]
@@ -122,6 +123,16 @@
             "description": "$option.gacha_pack.description",
             "default_case": "B3b",
             "cases": [
+                {
+                    "name": "B3b",
+                    "label": "$pack.b3b.label",
+                    "pipeline_override": {
+                        "Click_index": { "next": ["SelectionSeriesB"] },
+                        "SelectionGacha": { "expected": "奇跡日常" },
+                        "ClickGacha": { "expected": "B3b" },
+                        "ClickGacha2": { "expected": "B3b" }
+                    }
+                },
                 {
                     "name": "A1",
                     "label": "$pack.a1.label",
@@ -300,16 +311,6 @@
                         "SelectionGacha": { "expected": "進擊悖謬" },
                         "ClickGacha": { "expected": "B3a" },
                         "ClickGacha2": { "expected": "B3a" }
-                    }
-                },
-                {
-                    "name": "B3b",
-                    "label": "$pack.b3b.label",
-                    "pipeline_override": {
-                        "Click_index": { "next": ["SelectionSeriesB"] },
-                        "SelectionGacha": { "expected": "奇跡日常" },
-                        "ClickGacha": { "expected": "B3b" },
-                        "ClickGacha2": { "expected": "B3b" }
                     }
                 }
             ]

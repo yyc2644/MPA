@@ -194,26 +194,27 @@
         ]
     },
     "SwipeGacha": {
-        // Keep the gesture away from the Android edge area. The following
-        // candidates verify success before a sealed-pack retry is allowed.
+        // The game expects the pack seam to be cut from right to left. This
+        // reproduces the gesture used by the original, field-tested flow.
         "action": "Swipe",
         "begin": [
-            120,
-            742
+            700,
+            729
         ],
         "end": [
-            670,
-            742
+            90,
+            730
         ],
-        "duration": 300,
-        "end_hold": 50,
-        "post_delay": 1500,
+        "duration": 800,
+        "end_hold": 200,
+        "post_delay": 4000,
         "timeout": 12000,
         "on_error": [
             "GachaSwipeFailed"
         ],
         "next": [
             "SkipGacha",
+            "GachaTutorialSwipe",
             "ClickContinue",
             "ClickSkip",
             "GachaOver",
@@ -221,29 +222,29 @@
         ]
     },
     "SwipeGachaRetry1": {
-        // Always perform another left-to-right retry. During a failed cut,
-        // the prompt briefly disappears while the seal flashes, so checking
-        // it here would produce a false success.
+        // Retry slightly lower and more slowly. Keep the direction stable;
+        // reversing it was the cause of intermittent rejected cuts.
         "recognition": "DirectHit",
         "max_hit": 1,
         "action": "Swipe",
         "begin": [
-            110,
+            690,
             742
         ],
         "end": [
-            680,
+            80,
             742
         ],
-        "duration": 450,
-        "end_hold": 80,
-        "post_delay": 1500,
+        "duration": 1000,
+        "end_hold": 220,
+        "post_delay": 5000,
         "timeout": 12000,
         "on_error": [
             "GachaSwipeFailed"
         ],
         "next": [
             "SkipGacha",
+            "GachaTutorialSwipe",
             "ClickContinue",
             "ClickSkip",
             "GachaOver",
@@ -255,29 +256,29 @@
         "max_hit": 1,
         "action": "Swipe",
         "begin": [
-            100,
-            750
+            690,
+            755
         ],
         "end": [
-            690,
-            750
+            70,
+            755
         ],
-        "duration": 650,
-        "end_hold": 120,
-        // A rejected cut can keep the seal glowing for several seconds before
-        // the instruction returns. Judge the final state only after it settles.
-        "post_delay": 8000,
+        "duration": 1300,
+        "end_hold": 250,
+        // Leave enough time for the pack animation or card-registration page.
+        "post_delay": 7000,
         "timeout": 20000,
         "on_error": [
             "GachaSwipeFailed"
         ],
         "next": [
             "SkipGacha",
+            "GachaTutorialSwipe",
             "ClickContinue",
             "ClickSkip",
             "GachaOver",
             "GachaSwipeStillSealed",
-            "GachaSwipeOpened"
+            "GachaSwipeFailed"
         ]
     },
     "GachaSwipeStillSealed": {
@@ -295,23 +296,30 @@
             "GachaSwipeFailed"
         ]
     },
-    "GachaSwipeOpened": {
-        // Once the instruction disappears, the pack has left the sealed state.
+    "GachaTutorialSwipe": {
+        // The pack is already open and the first card is waiting to be
+        // registered. Use the visible bottom-right skip control instead of
+        // treating disappearance of the seal prompt as task completion.
         "recognition": "OCR",
         "roi": [
-            200,
-            280,
-            320,
-            80
+            80,
+            100,
+            560,
+            180
         ],
-        "expected": "開封",
+        "expected": "向上輕滑卡牌|向上轻滑卡牌",
         "threshold": 0.6,
-        "inverse": true,
-        "action": "DoNothing",
-        "focus": "GachaSwipeOpened",
-        "attach": {
-            "reason": "The sealed-pack swipe prompt disappeared."
-        }
+        "action": "Click",
+        "target": [
+            650,
+            1210
+        ],
+        "post_delay": 6000,
+        "next": [
+            "ClickContinue",
+            "ClickSkip",
+            "GachaOver"
+        ]
     },
     "GachaSwipeFailed": {
         "action": "StopTask",
@@ -329,11 +337,14 @@
             150
         ],
         "template": "CardBag/longclick.png",
-        "threshold": 0.8,
+        "threshold": 0.65,
         "action": "Click",
         "post_delay": 5000,
         "next": [
-            "ClickContinue"
+            "GachaTutorialSwipe",
+            "ClickContinue",
+            "ClickSkip",
+            "GachaOver"
         ]
     },
     "ClickContinue": {
@@ -347,8 +358,10 @@
         ],
         "expected": "續",
         "threshold": 0.8,
+        "post_delay": 4000,
         "next": [
-            "ClickSkip"
+            "ClickSkip",
+            "GachaOver"
         ]
     },
     "ClickSkip": {
@@ -360,12 +373,13 @@
             149
         ],
         "template": "CardBag/skip.png",
-        "threshold": 0.8,
+        "threshold": 0.65,
         "action": "Click",
+        "post_delay": 4000,
         "next": [
             "ClickSkip",
             "ClickContinue",
-            "ClickOpen"
+            "GachaOver"
         ]
     },
     "GachaOver": {

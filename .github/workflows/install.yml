@@ -81,6 +81,12 @@ jobs:
         with:
           go-version: "1.22.x"
 
+      - name: Set up .NET for MFA defaults patcher
+        if: matrix.os != 'android'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
       - name: Download MaaFramework
         uses: robinraju/release-downloader@v1
         with:
@@ -100,6 +106,12 @@ jobs:
           latest: true
           out-file-path: "MFA"
           extract: true
+
+      - name: Default MFAAvalonia updates to GitHub
+        if: matrix.os != 'android'
+        shell: bash
+        run: |
+          dotnet run --project tools/MfaDefaultsPatcher/MfaDefaultsPatcher.csproj --configuration Release -- MFA/libs/MFAAvalonia.Core.dll
 
       - name: Clean up MFAAvalonia archive
         if: matrix.os != 'android'

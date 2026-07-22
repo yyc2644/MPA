@@ -44,8 +44,88 @@
         "threshold": 0.65,
         "action": "DoNothing",
         "next": [
+            "WonderPickScanFree"
+        ]
+    },
+    "WonderPickScanFree": {
+        // Bonus Picks are pinned before normal groups and show Free/免費 at the
+        // bottom of the panel. Always consume these before spending stamina.
+        "recognition": "OCR",
+        "roi": [
+            240,
+            930,
+            240,
+            80
+        ],
+        "expected": "^[Ff][Rr][Ee][Ee]$|免[費费]|不消耗|No.?cost",
+        "threshold": 0.45,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            360,
+            600
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickConfirmFree"
+        ],
+        "on_error": [
             "WonderPickStrategyEntry"
         ]
+    },
+    "WonderPickConfirmFree": {
+        // Recheck the detail page so a stale/expired panel can never fall
+        // through to a paid Wonder Pick.
+        "recognition": "OCR",
+        "roi": [
+            70,
+            1020,
+            320,
+            120
+        ],
+        "expected": "^[Ff][Rr][Ee][Ee]$|免[費费]|不消耗|No.?cost|^0$",
+        "threshold": 0.4,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            520,
+            1090
+        ],
+        "post_delay": 9000,
+        "next": [
+            "WonderPickChooseFreeCard"
+        ],
+        "on_error": [
+            "WonderPickRefreshExpired",
+            "WonderPickFreeConfirmFailed"
+        ]
+    },
+    "WonderPickRefreshExpired": {
+        "recognition": "OCR",
+        "roi": [
+            150,
+            500,
+            420,
+            190
+        ],
+        "expected": "得卡挑[戰战]的更新時間到了|得卡挑[戰战]的更新时间到了",
+        "threshold": 0.55,
+        "action": "Click",
+        "target": [
+            360,
+            850
+        ],
+        "post_delay": 5000,
+        "next": [
+            "WonderPickListReady"
+        ]
+    },
+    "WonderPickFreeConfirmFailed": {
+        "action": "StopTask",
+        "focus": "WonderPickFreeConfirmFailed",
+        "attach": {
+            "reason": "A free Wonder Pick was selected, but the detail page could not be verified as free. No confirmation was pressed."
+        }
     },
     "WonderPickStrategyEntry": {
         // The frontend overrides this route for each strategy.
@@ -65,7 +145,7 @@
             55,
             75
         ],
-        "expected": "^[34]$",
+        "expected": "^4$",
         "threshold": 0.2,
         "only_rec": true,
         "action": "Click",
@@ -75,10 +155,34 @@
         ],
         "post_delay": 3000,
         "next": [
-            "WonderPickConfirmSafe"
+            "WonderPickConfirmRemaining4"
         ],
         "on_error": [
             "WonderPickScanHighRarityLower"
+        ]
+    },
+    "WonderPickScanHighRarity3": {
+        "recognition": "OCR",
+        "roi": [
+            365,
+            920,
+            55,
+            75
+        ],
+        "expected": "^3$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            360,
+            600
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickConfirmRemaining3"
+        ],
+        "on_error": [
+            "WonderPickScanHighRarityLower3"
         ]
     },
     "WonderPickScanHighRarityLower": {
@@ -89,7 +193,7 @@
             55,
             75
         ],
-        "expected": "^[34]$",
+        "expected": "^4$",
         "threshold": 0.2,
         "only_rec": true,
         "action": "Click",
@@ -99,7 +203,31 @@
         ],
         "post_delay": 3000,
         "next": [
-            "WonderPickConfirmSafe"
+            "WonderPickConfirmRemaining4"
+        ],
+        "on_error": [
+            "WonderPickScanHighRarity3"
+        ]
+    },
+    "WonderPickScanHighRarityLower3": {
+        "recognition": "OCR",
+        "roi": [
+            365,
+            1020,
+            55,
+            75
+        ],
+        "expected": "^3$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            360,
+            600
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickConfirmRemaining3"
         ],
         "on_error": [
             "WonderPickScroll",
@@ -126,7 +254,7 @@
         ],
         "post_delay": 3000,
         "next": [
-            "WonderPickConfirmSafe"
+            "WonderPickConfirmRemaining1"
         ],
         "on_error": [
             "WonderPickScanLowRarityLower"
@@ -150,7 +278,7 @@
         ],
         "post_delay": 3000,
         "next": [
-            "WonderPickConfirmSafe"
+            "WonderPickConfirmRemaining1"
         ],
         "on_error": [
             "WonderPickScroll",
@@ -177,7 +305,7 @@
         ],
         "post_delay": 3000,
         "next": [
-            "WonderPickConfirmSafe"
+            "WonderPickDetectSelectedCost4"
         ],
         "on_error": [
             "WonderPickScroll",
@@ -209,9 +337,99 @@
             "reason": "No Wonder Pick group matched the configured strategy after six scrolls."
         }
     },
-    "WonderPickConfirmSafe": {
-        // Only press OK when the dialog says at least one normal attempt is
-        // available. This prevents entering hourglass or Poke Gold dialogs.
+    "WonderPickDetectSelectedCost4": {
+        // Specified-card mode does not know the group cost until the detail
+        // page opens, so dispatch to a matching remaining-stamina check.
+        "recognition": "OCR",
+        "roi": [
+            180,
+            1040,
+            120,
+            100
+        ],
+        "expected": "^4$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "DoNothing",
+        "next": [
+            "WonderPickConfirmSpecifiedRemaining4"
+        ],
+        "on_error": [
+            "WonderPickDetectSelectedCost3"
+        ]
+    },
+    "WonderPickDetectSelectedCost3": {
+        "recognition": "OCR",
+        "roi": [
+            180,
+            1040,
+            120,
+            100
+        ],
+        "expected": "^3$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "DoNothing",
+        "next": [
+            "WonderPickConfirmSpecifiedRemaining3"
+        ],
+        "on_error": [
+            "WonderPickDetectSelectedCost2"
+        ]
+    },
+    "WonderPickDetectSelectedCost2": {
+        "recognition": "OCR",
+        "roi": [
+            180,
+            1040,
+            120,
+            100
+        ],
+        "expected": "^2$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "DoNothing",
+        "next": [
+            "WonderPickConfirmSpecifiedRemaining2"
+        ],
+        "on_error": [
+            "WonderPickDetectSelectedCost1"
+        ]
+    },
+    "WonderPickDetectSelectedCost1": {
+        "recognition": "OCR",
+        "roi": [
+            180,
+            1040,
+            120,
+            100
+        ],
+        "expected": "^1$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "DoNothing",
+        "next": [
+            "WonderPickConfirmSpecifiedRemaining1"
+        ],
+        "on_error": [
+            "WonderPickInsufficientStamina"
+        ]
+    },
+    "WonderPickCancelHighCost4Try3": {
+        // A 4-cost group can be unaffordable while a 3-cost high-rarity group
+        // is still playable. Return to the board and try cost 3 before giving up.
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            360,
+            1205
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickScanHighRarity3"
+        ]
+    },
+    "WonderPickConfirmRemaining4": {
         "recognition": "OCR",
         "roi": [
             405,
@@ -219,7 +437,31 @@
             75,
             80
         ],
-        "expected": "^[1-9]$",
+        "expected": "^[45]$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            520,
+            1090
+        ],
+        "post_delay": 9000,
+        "next": [
+            "WonderPickChooseCard"
+        ],
+        "on_error": [
+            "WonderPickCancelHighCost4Try3"
+        ]
+    },
+    "WonderPickConfirmRemaining3": {
+        "recognition": "OCR",
+        "roi": [
+            405,
+            925,
+            75,
+            80
+        ],
+        "expected": "^[3-5]$",
         "threshold": 0.2,
         "only_rec": true,
         "action": "Click",
@@ -233,6 +475,138 @@
         ],
         "on_error": [
             "WonderPickInsufficientStamina"
+        ]
+    },
+    "WonderPickConfirmRemaining1": {
+        "recognition": "OCR",
+        "roi": [
+            405,
+            925,
+            75,
+            80
+        ],
+        "expected": "^[1-5]$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            520,
+            1090
+        ],
+        "post_delay": 9000,
+        "next": [
+            "WonderPickChooseCard"
+        ],
+        "on_error": [
+            "WonderPickInsufficientStamina"
+        ]
+    },
+    "WonderPickConfirmSpecifiedRemaining4": {
+        "recognition": "OCR",
+        "roi": [
+            405,
+            925,
+            75,
+            80
+        ],
+        "expected": "^[45]$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            520,
+            1090
+        ],
+        "post_delay": 9000,
+        "next": [
+            "WonderPickChooseCard"
+        ],
+        "on_error": [
+            "WonderPickCancelSpecifiedAndScroll"
+        ]
+    },
+    "WonderPickConfirmSpecifiedRemaining3": {
+        "recognition": "OCR",
+        "roi": [
+            405,
+            925,
+            75,
+            80
+        ],
+        "expected": "^[3-5]$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            520,
+            1090
+        ],
+        "post_delay": 9000,
+        "next": [
+            "WonderPickChooseCard"
+        ],
+        "on_error": [
+            "WonderPickCancelSpecifiedAndScroll"
+        ]
+    },
+    "WonderPickConfirmSpecifiedRemaining2": {
+        "recognition": "OCR",
+        "roi": [
+            405,
+            925,
+            75,
+            80
+        ],
+        "expected": "^[2-5]$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            520,
+            1090
+        ],
+        "post_delay": 9000,
+        "next": [
+            "WonderPickChooseCard"
+        ],
+        "on_error": [
+            "WonderPickCancelSpecifiedAndScroll"
+        ]
+    },
+    "WonderPickConfirmSpecifiedRemaining1": {
+        "recognition": "OCR",
+        "roi": [
+            405,
+            925,
+            75,
+            80
+        ],
+        "expected": "^[1-5]$",
+        "threshold": 0.2,
+        "only_rec": true,
+        "action": "Click",
+        "target": [
+            520,
+            1090
+        ],
+        "post_delay": 9000,
+        "next": [
+            "WonderPickChooseCard"
+        ],
+        "on_error": [
+            "WonderPickCancelSpecifiedAndScroll"
+        ]
+    },
+    "WonderPickCancelSpecifiedAndScroll": {
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            360,
+            1205
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickScroll"
         ]
     },
     "WonderPickInsufficientStamina": {
@@ -265,6 +639,27 @@
             "WonderPickAfterResult"
         ]
     },
+    "WonderPickChooseFreeCard": {
+        "recognition": "OCR",
+        "roi": [
+            100,
+            100,
+            520,
+            170
+        ],
+        "expected": "選1張喜歡的卡牌吧|选1张喜欢的卡牌吧",
+        "threshold": 0.6,
+        "timeout": 30000,
+        "action": "Click",
+        "target": [
+            360,
+            480
+        ],
+        "post_delay": 11000,
+        "next": [
+            "WonderPickAfterFreeResult"
+        ]
+    },
     "WonderPickAfterResult": {
         "recognition": "OCR",
         "roi": [
@@ -281,6 +676,22 @@
             "WonderPickSaveResult"
         ]
     },
+    "WonderPickAfterFreeResult": {
+        "recognition": "OCR",
+        "roi": [
+            0,
+            50,
+            250,
+            220
+        ],
+        "expected": "GET",
+        "threshold": 0.55,
+        "timeout": 30000,
+        "action": "DoNothing",
+        "next": [
+            "WonderPickSaveFreeResult"
+        ]
+    },
     "WonderPickSaveResult": {
         // Command receives a fresh Maa screenshot as {IMAGE}; the helper copies
         // it before Maa removes the temporary file.
@@ -294,6 +705,22 @@
         "post_delay": 500,
         "next": [
             "WonderPickContinue"
+        ],
+        "on_error": [
+            "WonderPickRecordFailed"
+        ]
+    },
+    "WonderPickSaveFreeResult": {
+        "recognition": "DirectHit",
+        "action": "Command",
+        "exec": "helpers/wonder_pick_recorder.exe",
+        "args": [
+            "{IMAGE}",
+            "{RESOURCE_DIR}/../.."
+        ],
+        "post_delay": 500,
+        "next": [
+            "WonderPickFreeContinue"
         ],
         "on_error": [
             "WonderPickRecordFailed"
@@ -328,6 +755,122 @@
             "WonderPickSummary",
             "WonderPickListAfterDone",
             "WonderPickDone"
+        ]
+    },
+    "WonderPickFreeContinue": {
+        "recognition": "OCR",
+        "roi": [
+            170,
+            1130,
+            380,
+            130
+        ],
+        "expected": "點擊來繼續|点击来继续",
+        "threshold": 0.5,
+        "action": "Click",
+        "target": [
+            360,
+            1210
+        ],
+        "post_delay": 5000,
+        "next": [
+            "WonderPickFreeTutorialSwipe",
+            "WonderPickFreeDexContinue",
+            "WonderPickFreeSummary",
+            "WonderPickFreeListAfterDone"
+        ]
+    },
+    "WonderPickFreeTutorialSwipe": {
+        "recognition": "OCR",
+        "roi": [
+            80,
+            100,
+            560,
+            180
+        ],
+        "expected": "向上輕滑卡牌|向上轻滑卡牌",
+        "threshold": 0.6,
+        "action": "Click",
+        "target": [
+            650,
+            1210
+        ],
+        "post_delay": 6000,
+        "next": [
+            "WonderPickFreeDexContinue",
+            "WonderPickFreeSummary"
+        ]
+    },
+    "WonderPickFreeDexContinue": {
+        "recognition": "OCR",
+        "roi": [
+            210,
+            1080,
+            300,
+            150
+        ],
+        "expected": "繼續|继续",
+        "threshold": 0.65,
+        "action": "Click",
+        "post_delay": 5000,
+        "next": [
+            "WonderPickFreeSummary"
+        ]
+    },
+    "WonderPickFreeSummary": {
+        "recognition": "OCR",
+        "roi": [
+            180,
+            100,
+            360,
+            160
+        ],
+        "expected": "挑[戰战]結果|挑战结果",
+        "threshold": 0.6,
+        "action": "Click",
+        "target": [
+            360,
+            1210
+        ],
+        "post_delay": 5000,
+        "next": [
+            "WonderPickFreeCloseThanks",
+            "WonderPickFreeListAfterDone"
+        ]
+    },
+    "WonderPickFreeCloseThanks": {
+        "recognition": "OCR",
+        "roi": [
+            150,
+            760,
+            420,
+            200
+        ],
+        "expected": "要送出.*謝謝|要送出.*谢谢",
+        "threshold": 0.55,
+        "action": "Click",
+        "target": [
+            360,
+            1210
+        ],
+        "post_delay": 4000,
+        "next": [
+            "WonderPickFreeListAfterDone"
+        ]
+    },
+    "WonderPickFreeListAfterDone": {
+        "recognition": "OCR",
+        "roi": [
+            210,
+            35,
+            300,
+            110
+        ],
+        "expected": "得卡挑[戰战]",
+        "threshold": 0.65,
+        "action": "DoNothing",
+        "next": [
+            "WonderPickScanFree"
         ]
     },
     "WonderPickTutorialSwipe": {
