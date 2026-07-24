@@ -49,8 +49,8 @@
                     "label": "$option.wonder_pick_strategy.high_rarity",
                     "description": "$option.wonder_pick_strategy.high_rarity.description",
                     "pipeline_override": {
-                        "WonderPickStrategyEntry": { "next": ["WonderPickScanHighRarity"] },
-                        "WonderPickScroll": { "next": ["WonderPickScanHighRarity"] }
+                        "WonderPickStrategyEntry": { "next": ["WonderPickHighCostIcon", "WonderPickScroll", "WonderPickNoTarget"] },
+                        "WonderPickScroll": { "next": ["WonderPickHighCostIcon", "WonderPickScroll", "WonderPickNoTarget"] }
                     }
                 },
                 {
@@ -58,8 +58,8 @@
                     "label": "$option.wonder_pick_strategy.low_rarity",
                     "description": "$option.wonder_pick_strategy.low_rarity.description",
                     "pipeline_override": {
-                        "WonderPickStrategyEntry": { "next": ["WonderPickScanLowRarity"] },
-                        "WonderPickScroll": { "next": ["WonderPickScanLowRarity"] }
+                        "WonderPickStrategyEntry": { "next": ["WonderPickLowCostIcon", "WonderPickScroll", "WonderPickNoTarget"] },
+                        "WonderPickScroll": { "next": ["WonderPickLowCostIcon", "WonderPickScroll", "WonderPickNoTarget"] }
                     }
                 },
                 {
@@ -70,8 +70,8 @@
                         "wonder_pick_targets"
                     ],
                     "pipeline_override": {
-                        "WonderPickStrategyEntry": { "next": ["WonderPickScanSpecifiedCards"] },
-                        "WonderPickScroll": { "next": ["WonderPickScanSpecifiedCards"] }
+                        "WonderPickStrategyEntry": { "next": ["WonderPickScanSpecifiedCards", "WonderPickScroll", "WonderPickNoTarget"] },
+                        "WonderPickScroll": { "next": ["WonderPickScanSpecifiedCards", "WonderPickScroll", "WonderPickNoTarget"] }
                     }
                 }
             ]

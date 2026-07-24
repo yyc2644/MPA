@@ -44,21 +44,23 @@
         "threshold": 0.65,
         "action": "DoNothing",
         "next": [
-            "WonderPickScanFree"
+            "WonderPickScanFree",
+            "WonderPickStrategyEntry"
         ]
     },
     "WonderPickScanFree": {
-        // Bonus Picks are pinned before normal groups and show Free/免費 at the
-        // bottom of the panel. Always consume these before spending stamina.
+        // Bonus Picks are pinned before normal groups. The large localized
+        // title is substantially more stable than the small English "Free"
+        // label, which the OCR model can read as "Cre" on this screen.
         "recognition": "OCR",
         "roi": [
-            240,
-            930,
-            240,
-            80
+            180,
+            255,
+            360,
+            120
         ],
-        "expected": "^[Ff][Rr][Ee][Ee]$|免[費费]|不消耗|No.?cost",
-        "threshold": 0.45,
+        "expected": "^免.{2,4}$|Bonus.?Pick|Free.?Pick",
+        "threshold": 0.2,
         "only_rec": true,
         "action": "Click",
         "target": [
@@ -83,8 +85,11 @@
             320,
             120
         ],
-        "expected": "^[Ff][Rr][Ee][Ee]$|免[費费]|不消耗|No.?cost|^0$",
-        "threshold": 0.4,
+        // The stylized white "Free" label is commonly OCRed as "Cre" or
+        // "re.". Keep the check inside the cost-label ROI so paid picks
+        // can never satisfy this guard.
+        "expected": "^[FfCc]?[Rr][Ee][Ee.]?$|免[費费]|不消耗|No.?cost|^0$",
+        "threshold": 0.3,
         "only_rec": true,
         "action": "Click",
         "target": [
@@ -132,57 +137,95 @@
         "recognition": "DirectHit",
         "action": "DoNothing",
         "next": [
-            "WonderPickScanHighRarity"
+            "WonderPickHighCostIcon",
+            "WonderPickScroll",
+            "WonderPickNoTarget"
+        ]
+    },
+    "WonderPickHighCostIcon": {
+        // Anchor the OCR to the orange Wonder Pick stamina icon. Its vertical
+        // position changes as the list scrolls, while the digit is always just
+        // to the right of this icon.
+        "recognition": "TemplateMatch",
+        "roi": [
+            250,
+            230,
+            220,
+            850
+        ],
+        "template": "wonder_pick_cost_icon.png",
+        "threshold": 0.82,
+        "order_by": "Vertical",
+        "action": "DoNothing",
+        "next": [
+            "WonderPickScanHighRarity",
+            "WonderPickScanHighRarity3",
+            "WonderPickScroll",
+            "WonderPickNoTarget"
         ]
     },
     "WonderPickScanHighRarity": {
         // A displayed cost of 3 or 4 is used as the stable proxy for a group
         // containing a one-star-or-higher card. The final card is still random.
         "recognition": "OCR",
-        "roi": [
-            365,
-            920,
-            55,
-            75
+        "roi": "WonderPickHighCostIcon",
+        "roi_offset": [
+            42,
+            -5,
+            5,
+            10
         ],
         "expected": "^4$",
         "threshold": 0.2,
         "only_rec": true,
         "action": "Click",
-        "target": [
-            360,
-            600
+        "target": "WonderPickHighCostIcon",
+        // Clicking the cost badge itself does not open the group. A point just
+        // above it is always inside the group's card panel, even after scrolling.
+        "target_offset": [
+            0,
+            -90,
+            0,
+            0
         ],
         "post_delay": 3000,
         "next": [
+            "WonderPickDetailExpired",
             "WonderPickConfirmRemaining4"
         ],
         "on_error": [
-            "WonderPickScanHighRarityLower"
+            "WonderPickScanHighRarity3"
         ]
     },
     "WonderPickScanHighRarity3": {
-        "recognition": "OCR",
-        "roi": [
-            365,
-            920,
-            55,
-            75
+        // Single stylized digits are too small for OCR on several devices, so
+        // match the rendered cost digit relative to the stamina-icon anchor.
+        "recognition": "TemplateMatch",
+        "roi": "WonderPickHighCostIcon",
+        "roi_offset": [
+            42,
+            -5,
+            5,
+            10
         ],
-        "expected": "^3$",
-        "threshold": 0.2,
-        "only_rec": true,
+        "template": "wonder_pick_cost_3.png",
+        "threshold": 0.78,
         "action": "Click",
-        "target": [
-            360,
-            600
+        "target": "WonderPickHighCostIcon",
+        "target_offset": [
+            0,
+            -90,
+            0,
+            0
         ],
         "post_delay": 3000,
         "next": [
+            "WonderPickDetailExpired",
             "WonderPickConfirmRemaining3"
         ],
         "on_error": [
-            "WonderPickScanHighRarityLower3"
+            "WonderPickScroll",
+            "WonderPickNoTarget"
         ]
     },
     "WonderPickScanHighRarityLower": {
@@ -234,30 +277,53 @@
             "WonderPickNoTarget"
         ]
     },
+    "WonderPickLowCostIcon": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            250,
+            230,
+            220,
+            850
+        ],
+        "template": "wonder_pick_cost_icon.png",
+        "threshold": 0.82,
+        "order_by": "Vertical",
+        "action": "DoNothing",
+        "next": [
+            "WonderPickScanLowRarity",
+            "WonderPickScroll",
+            "WonderPickNoTarget"
+        ]
+    },
     "WonderPickScanLowRarity": {
         // Cost-1 groups contain only low-rarity cards and are the cheapest way
         // to pursue diamond-one / diamond-two cards.
-        "recognition": "OCR",
-        "roi": [
-            365,
-            920,
-            55,
-            75
+        "recognition": "TemplateMatch",
+        "roi": "WonderPickLowCostIcon",
+        "roi_offset": [
+            42,
+            -5,
+            5,
+            10
         ],
-        "expected": "^1$",
-        "threshold": 0.2,
-        "only_rec": true,
+        "template": "wonder_pick_cost_1.png",
+        "threshold": 0.78,
         "action": "Click",
-        "target": [
-            360,
-            600
+        "target": "WonderPickLowCostIcon",
+        "target_offset": [
+            0,
+            -90,
+            0,
+            0
         ],
         "post_delay": 3000,
         "next": [
+            "WonderPickDetailExpired",
             "WonderPickConfirmRemaining1"
         ],
         "on_error": [
-            "WonderPickScanLowRarityLower"
+            "WonderPickScroll",
+            "WonderPickNoTarget"
         ]
     },
     "WonderPickScanLowRarityLower": {
@@ -305,6 +371,7 @@
         ],
         "post_delay": 3000,
         "next": [
+            "WonderPickDetailExpired",
             "WonderPickDetectSelectedCost4"
         ],
         "on_error": [
@@ -317,17 +384,19 @@
         "max_hit": 6,
         "action": "Swipe",
         "begin": [
-            360,
-            1080
+            680,
+            1000
         ],
         "end": [
-            360,
-            320
+            680,
+            350
         ],
         "duration": 650,
-        "post_delay": 1200,
+        "post_delay": 1800,
         "next": [
-            "WonderPickScanHighRarity"
+            "WonderPickHighCostIcon",
+            "WonderPickScroll",
+            "WonderPickNoTarget"
         ]
     },
     "WonderPickNoTarget": {
@@ -429,17 +498,43 @@
             "WonderPickScanHighRarity3"
         ]
     },
-    "WonderPickConfirmRemaining4": {
-        "recognition": "OCR",
+    "WonderPickDetailExpired": {
+        // A group can expire between list recognition and opening its detail page.
+        // Always cancel it before evaluating the active confirmation button.
+        "recognition": "TemplateMatch",
         "roi": [
-            405,
-            925,
-            75,
+            20,
+            130,
+            170,
             80
         ],
-        "expected": "^[45]$",
-        "threshold": 0.2,
-        "only_rec": true,
+        "template": "wonder_pick_ended.png",
+        "threshold": 0.85,
+        "action": "Click",
+        "target": [
+            360,
+            1205
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickRefreshExpired",
+            "WonderPickScroll",
+            "WonderPickNoTarget"
+        ]
+    },
+    "WonderPickConfirmRemaining4": {
+        // The blue OK button is the reliable positive guard: when no play is
+        // available the game renders it disabled/gray. The selected cost has
+        // already been verified independently on the list.
+        "recognition": "TemplateMatch",
+        "roi": [
+            350,
+            1020,
+            340,
+            140
+        ],
+        "template": "wonder_pick_ok_active.png",
+        "threshold": 0.82,
         "action": "Click",
         "target": [
             520,
@@ -454,16 +549,15 @@
         ]
     },
     "WonderPickConfirmRemaining3": {
-        "recognition": "OCR",
+        "recognition": "TemplateMatch",
         "roi": [
-            405,
-            925,
-            75,
-            80
+            350,
+            1020,
+            340,
+            140
         ],
-        "expected": "^[3-5]$",
-        "threshold": 0.2,
-        "only_rec": true,
+        "template": "wonder_pick_ok_active.png",
+        "threshold": 0.82,
         "action": "Click",
         "target": [
             520,
@@ -478,16 +572,15 @@
         ]
     },
     "WonderPickConfirmRemaining1": {
-        "recognition": "OCR",
+        "recognition": "TemplateMatch",
         "roi": [
-            405,
-            925,
-            75,
-            80
+            350,
+            1020,
+            340,
+            140
         ],
-        "expected": "^[1-5]$",
-        "threshold": 0.2,
-        "only_rec": true,
+        "template": "wonder_pick_ok_active.png",
+        "threshold": 0.82,
         "action": "Click",
         "target": [
             520,
@@ -502,16 +595,15 @@
         ]
     },
     "WonderPickConfirmSpecifiedRemaining4": {
-        "recognition": "OCR",
+        "recognition": "TemplateMatch",
         "roi": [
-            405,
-            925,
-            75,
-            80
+            350,
+            1020,
+            340,
+            140
         ],
-        "expected": "^[45]$",
-        "threshold": 0.2,
-        "only_rec": true,
+        "template": "wonder_pick_ok_active.png",
+        "threshold": 0.82,
         "action": "Click",
         "target": [
             520,
@@ -526,16 +618,15 @@
         ]
     },
     "WonderPickConfirmSpecifiedRemaining3": {
-        "recognition": "OCR",
+        "recognition": "TemplateMatch",
         "roi": [
-            405,
-            925,
-            75,
-            80
+            350,
+            1020,
+            340,
+            140
         ],
-        "expected": "^[3-5]$",
-        "threshold": 0.2,
-        "only_rec": true,
+        "template": "wonder_pick_ok_active.png",
+        "threshold": 0.82,
         "action": "Click",
         "target": [
             520,
@@ -550,16 +641,15 @@
         ]
     },
     "WonderPickConfirmSpecifiedRemaining2": {
-        "recognition": "OCR",
+        "recognition": "TemplateMatch",
         "roi": [
-            405,
-            925,
-            75,
-            80
+            350,
+            1020,
+            340,
+            140
         ],
-        "expected": "^[2-5]$",
-        "threshold": 0.2,
-        "only_rec": true,
+        "template": "wonder_pick_ok_active.png",
+        "threshold": 0.82,
         "action": "Click",
         "target": [
             520,
@@ -574,16 +664,15 @@
         ]
     },
     "WonderPickConfirmSpecifiedRemaining1": {
-        "recognition": "OCR",
+        "recognition": "TemplateMatch",
         "roi": [
-            405,
-            925,
-            75,
-            80
+            350,
+            1020,
+            340,
+            140
         ],
-        "expected": "^[1-5]$",
-        "threshold": 0.2,
-        "only_rec": true,
+        "template": "wonder_pick_ok_active.png",
+        "threshold": 0.82,
         "action": "Click",
         "target": [
             520,
@@ -624,7 +713,8 @@
             520,
             170
         ],
-        "expected": "選1張喜歡的卡牌吧|选1张喜欢的卡牌吧",
+        // OCR sometimes confuses the thin traditional "卡" glyph with "士".
+        "expected": "選1張喜歡的[卡士]牌吧|选1张喜欢的[卡士]牌吧",
         "threshold": 0.6,
         "timeout": 30000,
         // Positions are not predictable. Use the top-center position so every
@@ -647,7 +737,8 @@
             520,
             170
         ],
-        "expected": "選1張喜歡的卡牌吧|选1张喜欢的卡牌吧",
+        // OCR sometimes confuses the thin traditional "卡" glyph with "士".
+        "expected": "選1張喜歡的[卡士]牌吧|选1张喜欢的[卡士]牌吧",
         "threshold": 0.6,
         "timeout": 30000,
         "action": "Click",
@@ -753,8 +844,7 @@
             "WonderPickTutorialSwipe",
             "WonderPickDexContinue",
             "WonderPickSummary",
-            "WonderPickListAfterDone",
-            "WonderPickDone"
+            "WonderPickListAfterDone"
         ]
     },
     "WonderPickFreeContinue": {
@@ -869,8 +959,13 @@
         "expected": "得卡挑[戰战]",
         "threshold": 0.65,
         "action": "DoNothing",
+        // The title appears before the returned list cards and costs finish
+        // loading. Wait before scanning so the strategy never scrolls through
+        // loading placeholders.
+        "post_delay": 6000,
         "next": [
-            "WonderPickScanFree"
+            "WonderPickScanFree",
+            "WonderPickStrategyEntry"
         ]
     },
     "WonderPickTutorialSwipe": {
@@ -928,8 +1023,7 @@
         "post_delay": 5000,
         "next": [
             "WonderPickCloseThanks",
-            "WonderPickListAfterDone",
-            "WonderPickDone"
+            "WonderPickListAfterDone"
         ]
     },
     "WonderPickCloseThanks": {
@@ -951,8 +1045,7 @@
         ],
         "post_delay": 4000,
         "next": [
-            "WonderPickListAfterDone",
-            "WonderPickDone"
+            "WonderPickListAfterDone"
         ]
     },
     "WonderPickListAfterDone": {

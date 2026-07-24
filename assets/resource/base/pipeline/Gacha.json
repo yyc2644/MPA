@@ -318,7 +318,8 @@
         "next": [
             "ClickContinue",
             "ClickSkip",
-            "GachaOver"
+            "GachaOver",
+            "GachaBackAtPack"
         ]
     },
     "GachaSwipeFailed": {
@@ -344,7 +345,8 @@
             "GachaTutorialSwipe",
             "ClickContinue",
             "ClickSkip",
-            "GachaOver"
+            "GachaOver",
+            "GachaBackAtPack"
         ]
     },
     "ClickContinue": {
@@ -361,7 +363,8 @@
         "post_delay": 4000,
         "next": [
             "ClickSkip",
-            "GachaOver"
+            "GachaOver",
+            "GachaBackAtPack"
         ]
     },
     "ClickSkip": {
@@ -379,8 +382,28 @@
         "next": [
             "ClickSkip",
             "ClickContinue",
-            "GachaOver"
+            "GachaOver",
+            "GachaBackAtPack"
         ]
+    },
+    "GachaBackAtPack": {
+        // Returning to the selected pack page is the normal terminal state.
+        // Only recognize the Open button; never click it, because stamina may
+        // no longer be free after the completed draw.
+        "recognition": "OCR",
+        "roi": [
+            280,
+            930,
+            160,
+            140
+        ],
+        "expected": "開封|开封",
+        "threshold": 0.65,
+        "action": "DoNothing",
+        "focus": "GachaBackAtPack",
+        "attach": {
+            "reason": "The opened pack flow returned to the pack detail page."
+        }
     },
     "GachaOver": {
         "action": "Click",
