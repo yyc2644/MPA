@@ -53,6 +53,9 @@
         // title is substantially more stable than the small English "Free"
         // label, which the OCR model can read as "Cre" on this screen.
         "recognition": "OCR",
+        // Multiple free picks can coexist, but a stale list entry must not be
+        // re-entered forever.
+        "max_hit": 5,
         "roi": [
             180,
             255,
@@ -139,7 +142,7 @@
         "next": [
             "WonderPickHighCostIcon",
             "WonderPickScroll",
-            "WonderPickNoTarget"
+            "WonderPickFallbackReset1"
         ]
     },
     "WonderPickHighCostIcon": {
@@ -161,7 +164,7 @@
             "WonderPickScanHighRarity",
             "WonderPickScanHighRarity3",
             "WonderPickScroll",
-            "WonderPickNoTarget"
+            "WonderPickFallbackReset1"
         ]
     },
     "WonderPickScanHighRarity": {
@@ -225,7 +228,7 @@
         ],
         "on_error": [
             "WonderPickScroll",
-            "WonderPickNoTarget"
+            "WonderPickFallbackReset1"
         ]
     },
     "WonderPickScanHighRarityLower": {
@@ -352,36 +355,255 @@
         ]
     },
     "WonderPickScanSpecifiedCards": {
-        // The expected regex is replaced by the frontend input. Separate card
-        // names with |, for example: 仙子伊布|呆呆獸.
-        "recognition": "OCR",
+        // Locate one group first, then OCR each card-name strip separately.
+        // Whole-screen OCR makes these tiny labels too small and commonly turns
+        // names such as 貪心栗鼠 into unrelated characters.
+        "recognition": "TemplateMatch",
         "roi": [
-            30,
-            360,
-            660,
-            520
+            250,
+            230,
+            220,
+            850
+        ],
+        "template": "wonder_pick_cost_icon.png",
+        "threshold": 0.82,
+        "order_by": "Vertical",
+        "action": "DoNothing",
+        "next": [
+            "WonderPickSpecifiedTopLeft",
+            "WonderPickSpecifiedTopCenter",
+            "WonderPickSpecifiedTopRight",
+            "WonderPickSpecifiedBottomLeft",
+            "WonderPickSpecifiedBottomRight",
+            "WonderPickScroll",
+            "WonderPickFallbackReset1"
+        ]
+    },
+    "WonderPickSpecifiedTopLeft": {
+        "recognition": "OCR",
+        "roi": "WonderPickScanSpecifiedCards",
+        "roi_offset": [
+            -263,
+            -535,
+            131,
+            -13
         ],
         "expected": "仙子伊布|呆呆獸",
-        "threshold": 0.55,
-        "order_by": "Expected",
-        "action": "Click",
-        "target": [
-            360,
-            600
+        "replace": [
+            [
+                "^弗毛車$",
+                "綠毛蟲"
+            ],
+            [
+                "^(電港|田丘)$",
+                "雷丘"
+            ],
+            [
+                "^被如量$",
+                "波加曼"
+            ],
+            [
+                "^本果殺獸$",
+                "呆殼獸"
+            ],
+            [
+                "^秒丘蛙$",
+                "沙丘娃"
+            ],
+            [
+                "^.*資心慄車$",
+                "貪心栗鼠"
+            ]
         ],
+        "threshold": 0.2,
+        "action": "Click",
         "post_delay": 3000,
         "next": [
             "WonderPickDetailExpired",
-            "WonderPickDetectSelectedCost4"
+            "WonderPickConfirmSpecified"
+        ]
+    },
+    "WonderPickSpecifiedTopCenter": {
+        "recognition": "OCR",
+        "roi": "WonderPickScanSpecifiedCards",
+        "roi_offset": [
+            -56,
+            -535,
+            131,
+            -13
         ],
-        "on_error": [
-            "WonderPickScroll",
-            "WonderPickNoTarget"
+        "expected": "仙子伊布|呆呆獸",
+        "replace": [
+            [
+                "^弗毛車$",
+                "綠毛蟲"
+            ],
+            [
+                "^(電港|田丘)$",
+                "雷丘"
+            ],
+            [
+                "^被如量$",
+                "波加曼"
+            ],
+            [
+                "^本果殺獸$",
+                "呆殼獸"
+            ],
+            [
+                "^秒丘蛙$",
+                "沙丘娃"
+            ],
+            [
+                "^.*資心慄車$",
+                "貪心栗鼠"
+            ]
+        ],
+        "threshold": 0.2,
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "WonderPickDetailExpired",
+            "WonderPickConfirmSpecified"
+        ]
+    },
+    "WonderPickSpecifiedTopRight": {
+        "recognition": "OCR",
+        "roi": "WonderPickScanSpecifiedCards",
+        "roi_offset": [
+            151,
+            -535,
+            131,
+            -13
+        ],
+        "expected": "仙子伊布|呆呆獸",
+        "replace": [
+            [
+                "^弗毛車$",
+                "綠毛蟲"
+            ],
+            [
+                "^(電港|田丘)$",
+                "雷丘"
+            ],
+            [
+                "^被如量$",
+                "波加曼"
+            ],
+            [
+                "^本果殺獸$",
+                "呆殼獸"
+            ],
+            [
+                "^秒丘蛙$",
+                "沙丘娃"
+            ],
+            [
+                "^.*資心慄車$",
+                "貪心栗鼠"
+            ]
+        ],
+        "threshold": 0.2,
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "WonderPickDetailExpired",
+            "WonderPickConfirmSpecified"
+        ]
+    },
+    "WonderPickSpecifiedBottomLeft": {
+        "recognition": "OCR",
+        "roi": "WonderPickScanSpecifiedCards",
+        "roi_offset": [
+            -157,
+            -271,
+            131,
+            -13
+        ],
+        "expected": "仙子伊布|呆呆獸",
+        "replace": [
+            [
+                "^弗毛車$",
+                "綠毛蟲"
+            ],
+            [
+                "^(電港|田丘)$",
+                "雷丘"
+            ],
+            [
+                "^被如量$",
+                "波加曼"
+            ],
+            [
+                "^本果殺獸$",
+                "呆殼獸"
+            ],
+            [
+                "^秒丘蛙$",
+                "沙丘娃"
+            ],
+            [
+                "^.*資心慄車$",
+                "貪心栗鼠"
+            ]
+        ],
+        "threshold": 0.2,
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "WonderPickDetailExpired",
+            "WonderPickConfirmSpecified"
+        ]
+    },
+    "WonderPickSpecifiedBottomRight": {
+        "recognition": "OCR",
+        "roi": "WonderPickScanSpecifiedCards",
+        "roi_offset": [
+            50,
+            -271,
+            131,
+            -13
+        ],
+        "expected": "仙子伊布|呆呆獸",
+        "replace": [
+            [
+                "^弗毛車$",
+                "綠毛蟲"
+            ],
+            [
+                "^(電港|田丘)$",
+                "雷丘"
+            ],
+            [
+                "^被如量$",
+                "波加曼"
+            ],
+            [
+                "^本果殺獸$",
+                "呆殼獸"
+            ],
+            [
+                "^秒丘蛙$",
+                "沙丘娃"
+            ],
+            [
+                "^.*資心慄車$",
+                "貪心栗鼠"
+            ]
+        ],
+        "threshold": 0.2,
+        "action": "Click",
+        "post_delay": 3000,
+        "next": [
+            "WonderPickDetailExpired",
+            "WonderPickConfirmSpecified"
         ]
     },
     "WonderPickScroll": {
         "recognition": "DirectHit",
-        "max_hit": 6,
+        // The counter spans the whole task. Twelve swipes cover repeated
+        // searches after several successful picks while remaining bounded.
+        "max_hit": 12,
         "action": "Swipe",
         "begin": [
             680,
@@ -396,6 +618,144 @@
         "next": [
             "WonderPickHighCostIcon",
             "WonderPickScroll",
+            "WonderPickFallbackReset1"
+        ]
+    },
+    "WonderPickFallbackReset1": {
+        // Preferred targets are exhausted or unaffordable. Return to the top
+        // and use cost-1 groups to drain the remaining stamina safely.
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            680,
+            350
+        ],
+        "end": [
+            680,
+            1050
+        ],
+        "duration": 650,
+        "post_delay": 500,
+        "next": [
+            "WonderPickFallbackReset2"
+        ]
+    },
+    "WonderPickFallbackReset2": {
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            680,
+            350
+        ],
+        "end": [
+            680,
+            1050
+        ],
+        "duration": 650,
+        "post_delay": 500,
+        "next": [
+            "WonderPickFallbackReset3"
+        ]
+    },
+    "WonderPickFallbackReset3": {
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            680,
+            350
+        ],
+        "end": [
+            680,
+            1050
+        ],
+        "duration": 650,
+        "post_delay": 500,
+        "next": [
+            "WonderPickFallbackReset4"
+        ]
+    },
+    "WonderPickFallbackReset4": {
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            680,
+            350
+        ],
+        "end": [
+            680,
+            1050
+        ],
+        "duration": 650,
+        "post_delay": 1800,
+        "next": [
+            "WonderPickFallbackLowCostIcon",
+            "WonderPickNoTarget"
+        ]
+    },
+    "WonderPickFallbackLowCostIcon": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            250,
+            230,
+            220,
+            850
+        ],
+        "template": "wonder_pick_cost_icon.png",
+        "threshold": 0.82,
+        "order_by": "Vertical",
+        "action": "DoNothing",
+        "next": [
+            "WonderPickFallbackScanLowRarity",
+            "WonderPickFallbackScroll",
+            "WonderPickNoTarget"
+        ]
+    },
+    "WonderPickFallbackScanLowRarity": {
+        "recognition": "TemplateMatch",
+        "roi": "WonderPickFallbackLowCostIcon",
+        "roi_offset": [
+            42,
+            -5,
+            5,
+            10
+        ],
+        "template": "wonder_pick_cost_1.png",
+        "threshold": 0.78,
+        "action": "Click",
+        "target": "WonderPickFallbackLowCostIcon",
+        "target_offset": [
+            0,
+            -90,
+            0,
+            0
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickDetailExpired",
+            "WonderPickConfirmRemaining1"
+        ],
+        "on_error": [
+            "WonderPickFallbackScroll",
+            "WonderPickNoTarget"
+        ]
+    },
+    "WonderPickFallbackScroll": {
+        "recognition": "DirectHit",
+        "max_hit": 12,
+        "action": "Swipe",
+        "begin": [
+            680,
+            1000
+        ],
+        "end": [
+            680,
+            350
+        ],
+        "duration": 650,
+        "post_delay": 1800,
+        "next": [
+            "WonderPickFallbackLowCostIcon",
+            "WonderPickFallbackScroll",
             "WonderPickNoTarget"
         ]
     },
@@ -403,7 +763,7 @@
         "action": "StopTask",
         "focus": "WonderPickNoTarget",
         "attach": {
-            "reason": "No Wonder Pick group matched the configured strategy after six scrolls."
+            "reason": "No preferred or cost-1 Wonder Pick group remains after the bounded search."
         }
     },
     "WonderPickDetectSelectedCost4": {
@@ -519,7 +879,7 @@
         "next": [
             "WonderPickRefreshExpired",
             "WonderPickScroll",
-            "WonderPickNoTarget"
+            "WonderPickFallbackReset1"
         ]
     },
     "WonderPickConfirmRemaining4": {
@@ -568,7 +928,7 @@
             "WonderPickChooseCard"
         ],
         "on_error": [
-            "WonderPickInsufficientStamina"
+            "WonderPickCancelHighCost3FallbackLow"
         ]
     },
     "WonderPickConfirmRemaining1": {
@@ -591,7 +951,33 @@
             "WonderPickChooseCard"
         ],
         "on_error": [
-            "WonderPickInsufficientStamina"
+            "WonderPickCancelNoStamina"
+        ]
+    },
+    "WonderPickConfirmSpecified": {
+        // The active OK button already proves the selected group is affordable.
+        // Reading the tiny stylized cost digit is less reliable and is not
+        // needed here; a disabled button is never clicked.
+        "recognition": "TemplateMatch",
+        "roi": [
+            350,
+            1020,
+            340,
+            140
+        ],
+        "template": "wonder_pick_ok_active.png",
+        "threshold": 0.82,
+        "action": "Click",
+        "target": [
+            520,
+            1090
+        ],
+        "post_delay": 9000,
+        "next": [
+            "WonderPickChooseCard"
+        ],
+        "on_error": [
+            "WonderPickCancelSpecifiedAndScroll"
         ]
     },
     "WonderPickConfirmSpecifiedRemaining4": {
@@ -695,7 +1081,34 @@
         ],
         "post_delay": 3000,
         "next": [
-            "WonderPickScroll"
+            "WonderPickScroll",
+            "WonderPickFallbackReset1"
+        ]
+    },
+    "WonderPickCancelHighCost3FallbackLow": {
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            360,
+            1205
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickFallbackReset1"
+        ]
+    },
+    "WonderPickCancelNoStamina": {
+        // Close the unaffordable detail sheet before ending the task. This
+        // guarantees hourglass and Poke Gold dialogs are never opened.
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            360,
+            1205
+        ],
+        "post_delay": 3000,
+        "next": [
+            "WonderPickInsufficientStamina"
         ]
     },
     "WonderPickInsufficientStamina": {
@@ -790,8 +1203,7 @@
         "action": "Command",
         "exec": "helpers/wonder_pick_recorder.exe",
         "args": [
-            "{IMAGE}",
-            "{RESOURCE_DIR}/../.."
+            "{IMAGE}"
         ],
         "post_delay": 500,
         "next": [
@@ -806,8 +1218,7 @@
         "action": "Command",
         "exec": "helpers/wonder_pick_recorder.exe",
         "args": [
-            "{IMAGE}",
-            "{RESOURCE_DIR}/../.."
+            "{IMAGE}"
         ],
         "post_delay": 500,
         "next": [
@@ -908,6 +1319,7 @@
         ]
     },
     "WonderPickFreeSummary": {
+        "max_hit": 12,
         "recognition": "OCR",
         "roi": [
             180,
@@ -917,15 +1329,17 @@
         ],
         "expected": "挑[戰战]結果|挑战结果",
         "threshold": 0.6,
-        "action": "Click",
+        "action": "LongPress",
         "target": [
             360,
             1210
         ],
+        "duration": 1500,
         "post_delay": 5000,
         "next": [
             "WonderPickFreeCloseThanks",
-            "WonderPickFreeListAfterDone"
+            "WonderPickFreeListAfterDone",
+            "WonderPickFreeSummary"
         ]
     },
     "WonderPickFreeCloseThanks": {
@@ -1002,10 +1416,12 @@
         "action": "Click",
         "post_delay": 5000,
         "next": [
+            "WonderPickTutorialSwipe",
             "WonderPickSummary"
         ]
     },
     "WonderPickSummary": {
+        "max_hit": 12,
         "recognition": "OCR",
         "roi": [
             180,
@@ -1015,15 +1431,17 @@
         ],
         "expected": "挑[戰战]結果|挑战结果",
         "threshold": 0.6,
-        "action": "Click",
+        "action": "LongPress",
         "target": [
             360,
             1210
         ],
+        "duration": 1500,
         "post_delay": 5000,
         "next": [
             "WonderPickCloseThanks",
-            "WonderPickListAfterDone"
+            "WonderPickListAfterDone",
+            "WonderPickSummary"
         ]
     },
     "WonderPickCloseThanks": {
@@ -1060,7 +1478,77 @@
         "threshold": 0.65,
         "action": "DoNothing",
         "next": [
-            "WonderPickDone"
+            "WonderPickResetAfterDone1"
+        ]
+    },
+    "WonderPickResetAfterDone1": {
+        // Each successful normal pick returns to the list. Reset to the top
+        // before checking free picks and the configured strategy again.
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            680,
+            350
+        ],
+        "end": [
+            680,
+            1050
+        ],
+        "duration": 650,
+        "post_delay": 500,
+        "next": [
+            "WonderPickResetAfterDone2"
+        ]
+    },
+    "WonderPickResetAfterDone2": {
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            680,
+            350
+        ],
+        "end": [
+            680,
+            1050
+        ],
+        "duration": 650,
+        "post_delay": 500,
+        "next": [
+            "WonderPickResetAfterDone3"
+        ]
+    },
+    "WonderPickResetAfterDone3": {
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            680,
+            350
+        ],
+        "end": [
+            680,
+            1050
+        ],
+        "duration": 650,
+        "post_delay": 500,
+        "next": [
+            "WonderPickResetAfterDone4"
+        ]
+    },
+    "WonderPickResetAfterDone4": {
+        "recognition": "DirectHit",
+        "action": "Swipe",
+        "begin": [
+            680,
+            350
+        ],
+        "end": [
+            680,
+            1050
+        ],
+        "duration": 650,
+        "post_delay": 2500,
+        "next": [
+            "WonderPickListReady"
         ]
     },
     "WonderPickDone": {
