@@ -49,8 +49,8 @@
                     "label": "$option.wonder_pick_strategy.high_rarity",
                     "description": "$option.wonder_pick_strategy.high_rarity.description",
                     "pipeline_override": {
-                        "WonderPickStrategyEntry": { "next": ["WonderPickHighCostIcon", "WonderPickScroll", "WonderPickNoTarget"] },
-                        "WonderPickScroll": { "next": ["WonderPickHighCostIcon", "WonderPickScroll", "WonderPickNoTarget"] }
+                        "WonderPickStrategyEntry": { "next": ["WonderPickHighCostIcon", "WonderPickScroll", "WonderPickFallbackReset1"] },
+                        "WonderPickScroll": { "next": ["WonderPickHighCostIcon", "WonderPickScroll", "WonderPickFallbackReset1"] }
                     }
                 },
                 {
@@ -70,8 +70,8 @@
                         "wonder_pick_targets"
                     ],
                     "pipeline_override": {
-                        "WonderPickStrategyEntry": { "next": ["WonderPickScanSpecifiedCards", "WonderPickScroll", "WonderPickNoTarget"] },
-                        "WonderPickScroll": { "next": ["WonderPickScanSpecifiedCards", "WonderPickScroll", "WonderPickNoTarget"] }
+                        "WonderPickStrategyEntry": { "next": ["WonderPickScanSpecifiedCards", "WonderPickScroll", "WonderPickFallbackReset1"] },
+                        "WonderPickScroll": { "next": ["WonderPickScanSpecifiedCards", "WonderPickScroll", "WonderPickFallbackReset1"] }
                     }
                 }
             ]
@@ -92,9 +92,11 @@
                 }
             ],
             "pipeline_override": {
-                "WonderPickScanSpecifiedCards": {
-                    "expected": "{target_cards}"
-                }
+                "WonderPickSpecifiedTopLeft": { "expected": "{target_cards}" },
+                "WonderPickSpecifiedTopCenter": { "expected": "{target_cards}" },
+                "WonderPickSpecifiedTopRight": { "expected": "{target_cards}" },
+                "WonderPickSpecifiedBottomLeft": { "expected": "{target_cards}" },
+                "WonderPickSpecifiedBottomRight": { "expected": "{target_cards}" }
             }
         },
         "wonder_pick_save_result": {
@@ -128,7 +130,7 @@
                     "label": "$pack.b3b.label",
                     "pipeline_override": {
                         "Click_index": { "next": ["SelectionSeriesB"] },
-                        "SelectionGacha": { "expected": "奇跡日常" },
+                        "SelectionGacha": { "expected": "^[奇寄].{1,2}日常$" },
                         "ClickGacha": { "expected": "B3b" },
                         "ClickGacha2": { "expected": "B3b" }
                     }

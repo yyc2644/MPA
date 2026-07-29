@@ -2,7 +2,8 @@
     "Gacha": {
         "next": [
             "[JumpBack]GachaStartUp",
-            "CheckFreePack"
+            "CheckFreePack",
+            "GachaNoFreePack"
         ],
         "post_delay": 1000
     },
@@ -14,17 +15,18 @@
         ]
     },
     "CheckFreePack": {
-        // Only continue when pack stamina is full. This prevents the task from
-        // entering a flow that may offer to consume pack hourglasses.
-        "recognition": "OCR",
+        // A stored pack is represented by the small full-pack tile. The timer
+        // can keep counting toward the second pack while one pack is already
+        // available, so checking only for "MAX" misses this common state.
+        "recognition": "TemplateMatch",
         "roi": [
-            280,
-            710,
-            170,
-            80
+            250,
+            680,
+            120,
+            110
         ],
-        "expected": "MAX",
-        "threshold": 0.65,
+        "template": "CardBag/gacha_stamina_ready_home.png",
+        "threshold": 0.82,
         "timeout": 5000,
         "action": "DoNothing",
         "next": [
@@ -34,11 +36,32 @@
             "GachaNoFreePack"
         ]
     },
+    "CheckFreePackDetail": {
+        // After opening a pack the task returns to the same pack detail page.
+        // Recheck the top stamina gauge before pressing Open again.
+        "recognition": "TemplateMatch",
+        "roi": [
+            365,
+            20,
+            90,
+            105
+        ],
+        "template": "CardBag/gacha_stamina_ready.png",
+        "threshold": 0.82,
+        "timeout": 5000,
+        "action": "DoNothing",
+        "next": [
+            "ClickOpen"
+        ],
+        "on_error": [
+            "GachaNoFreePack"
+        ]
+    },
     "GachaNoFreePack": {
         "action": "StopTask",
         "focus": "GachaNoFreePack",
         "attach": {
-            "reason": "Pack stamina is not MAX; no free pack is available."
+            "reason": "No stored pack remains. Pack hourglasses and Poke Gold were not used."
         }
     },
     "Check_point": {
@@ -79,7 +102,8 @@
         "post_delay": 1000,
         "next": [
             "SelectionGacha",
-            "ScrollGachaList"
+            "ScrollGachaList",
+            "GachaPackNotFound"
         ]
     },
     "SelectionSeriesA": {
@@ -98,12 +122,14 @@
         "post_delay": 1000,
         "next": [
             "SelectionGacha",
-            "ScrollGachaList"
+            "ScrollGachaList",
+            "GachaPackNotFound"
         ]
     },
     "SelectionGacha": {
         "recognition": "OCR",
-        "expected": "奇跡日常",
+        // The stylized title is commonly OCRed as 寄趺日常.
+        "expected": "^[奇寄].{1,2}日常$",
         "roi": [
             20,
             360,
@@ -121,6 +147,9 @@
         ]
     },
     "ScrollGachaList": {
+        // Pack names can change or disappear after a game update. Stop after a
+        // full traversal instead of swiping forever when the target is absent.
+        "max_hit": 12,
         "action": "Swipe",
         "begin": [
             360,
@@ -134,26 +163,34 @@
         "post_delay": 500,
         "next": [
             "SelectionGacha",
-            "ScrollGachaList"
+            "ScrollGachaList",
+            "GachaPackNotFound"
         ]
     },
+    "GachaPackNotFound": {
+        "action": "StopTask",
+        "focus": "GachaPackNotFound",
+        "attach": {
+            "reason": "The configured booster pack was not found after twelve list scrolls."
+        }
+    },
     "ClickGacha": {
-        // Use the series code to verify the detail page, but click the pack
-        // body: tapping the small code label is ignored by some game frames.
+        // Use the fixed series badge to verify the detail page. OCR is unstable
+        // while the 3D pack rocks and can read B3b as "日基白" or "巴3b".
         "action": "Click",
         "target": [
             360,
             720
         ],
-        "recognition": "OCR",
+        "recognition": "TemplateMatch",
         "roi": [
             404,
             397,
             144,
             119
         ],
-        "expected": "B3b",
-        "threshold": 0.8,
+        "template": "CardBag/gacha_b3b_badge.png",
+        "threshold": 0.78,
         "post_delay": 1000,
         "next": [
             "ClickOpen"
@@ -186,7 +223,7 @@
             59
         ],
         "expected": "B3b",
-        "threshold": 0.8,
+        "threshold": 0.3,
         // Wait until the sealed pack and its swipe prompt are interactive.
         "post_delay": 4000,
         "next": [
@@ -225,7 +262,7 @@
         // Retry slightly lower and more slowly. Keep the direction stable;
         // reversing it was the cause of intermittent rejected cuts.
         "recognition": "DirectHit",
-        "max_hit": 1,
+        "max_hit": 4,
         "action": "Swipe",
         "begin": [
             690,
@@ -253,7 +290,7 @@
     },
     "SwipeGachaRetry2": {
         "recognition": "DirectHit",
-        "max_hit": 1,
+        "max_hit": 4,
         "action": "Swipe",
         "begin": [
             690,
@@ -309,13 +346,15 @@
         ],
         "expected": "向上輕滑卡牌|向上轻滑卡牌",
         "threshold": 0.6,
-        "action": "Click",
+        "action": "LongPress",
         "target": [
             650,
             1210
         ],
+        "duration": 1500,
         "post_delay": 6000,
         "next": [
+            "SkipGacha",
             "ClickContinue",
             "ClickSkip",
             "GachaOver",
@@ -330,6 +369,10 @@
         }
     },
     "SkipGacha": {
+        // This control is explicitly labelled "long press" in game. A normal
+        // click only advances one card and leaves the task stuck on the card
+        // carousel.
+        "max_hit": 8,
         "recognition": "TemplateMatch",
         "roi": [
             560,
@@ -339,9 +382,15 @@
         ],
         "template": "CardBag/longclick.png",
         "threshold": 0.65,
-        "action": "Click",
+        "action": "LongPress",
+        "target": [
+            650,
+            1210
+        ],
+        "duration": 1500,
         "post_delay": 5000,
         "next": [
+            "SkipGacha",
             "GachaTutorialSwipe",
             "ClickContinue",
             "ClickSkip",
@@ -350,6 +399,7 @@
         ]
     },
     "ClickContinue": {
+        "max_hit": 8,
         "action": "Click",
         "recognition": "OCR",
         "roi": [
@@ -368,6 +418,9 @@
         ]
     },
     "ClickSkip": {
+        // Some registration screens contain more than one skip transition,
+        // but a stale button must not create an endless ClickSkip loop.
+        "max_hit": 10,
         "recognition": "TemplateMatch",
         "roi": [
             568,
@@ -387,9 +440,9 @@
         ]
     },
     "GachaBackAtPack": {
-        // Returning to the selected pack page is the normal terminal state.
-        // Only recognize the Open button; never click it, because stamina may
-        // no longer be free after the completed draw.
+        // Continue until the stored-pack tile disappears. The separate stamina
+        // guard prevents the Open button from ever being used with hourglasses.
+        "max_hit": 3,
         "recognition": "OCR",
         "roi": [
             280,
@@ -400,9 +453,14 @@
         "expected": "開封|开封",
         "threshold": 0.65,
         "action": "DoNothing",
+        "post_delay": 2500,
+        "next": [
+            "CheckFreePackDetail",
+            "GachaNoFreePack"
+        ],
         "focus": "GachaBackAtPack",
         "attach": {
-            "reason": "The opened pack flow returned to the pack detail page."
+            "reason": "The opened pack flow returned to the pack detail page; checking for another stored pack."
         }
     },
     "GachaOver": {
